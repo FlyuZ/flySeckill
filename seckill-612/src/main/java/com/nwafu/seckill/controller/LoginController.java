@@ -6,6 +6,7 @@ import com.nwafu.seckill.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.DigestUtils;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,7 +30,7 @@ public class LoginController {
      *
      * @return 登录成功页面
      */
-    @RequestMapping(value = {"/login"})
+    @PostMapping(value = {"/login"})
     @ResponseBody
     public String userLogin(@RequestParam("username") String username,
                             @RequestParam("password") String password, HttpServletRequest request) {
@@ -39,7 +40,7 @@ public class LoginController {
             System.out.println(user.toString());
             request.getSession().setAttribute("session_user", user);     //将用户信息放入session
             //request.getSession().setAttribute("user", user.getNickname());
-            return "/goods"; //返回首页
+            return "/seckill/list"; //返回首页
         }
         return "loginError";
     }
@@ -54,8 +55,8 @@ public class LoginController {
      *
      * @return 注册结果
      */
+    @PostMapping(value = {"/register"})
     @ResponseBody
-    @RequestMapping(value = {"/register"})
     public String addUser(@RequestParam("username") String username,
                           @RequestParam("password") String password,
                           @RequestParam("nickname") String nickname) {
@@ -63,9 +64,9 @@ public class LoginController {
         String md5Password = DigestUtils.md5DigestAsHex(password.getBytes());
         int res = userLoginService.adduser(username, md5Password, nickname);
         if (res == 0) {
-            return "注册失败！";
+            return "list";
         } else {
-            return "";
+            return "failed";
         }
     }
 }

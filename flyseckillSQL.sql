@@ -1,4 +1,4 @@
-﻿/*
+/*
 SQLyog Ultimate v8.32 
 MySQL - 5.5.28 : Database - flyseckill
 *********************************************************************
@@ -147,16 +147,16 @@ CREATE TABLE `user` (
   `username` varchar(20) NOT NULL,
   `password` varchar(50) NOT NULL,
   `nickname` varchar(20) NOT NULL,
-  `mailbox` varchar(30) NOT NULL,
+  `mailbox` varchar(30) DEFAULT NULL,
   `icon` varchar(30) DEFAULT NULL,
   `address` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `name_index` (`username`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 /*Data for the table `user` */
 
-insert  into `user`(`user_id`,`username`,`password`,`nickname`,`mailbox`,`icon`,`address`) values (1,'13053888876','980609','紫青苏','490548543@qq.com',NULL,NULL);
+insert  into `user`(`user_id`,`username`,`password`,`nickname`,`mailbox`,`icon`,`address`) values (1,'13053888876','980609','紫青苏','490548543@qq.com',NULL,NULL),(2,'11111111111','e10adc3949ba59abbe56e057f20f883e','11111111',NULL,NULL,NULL);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

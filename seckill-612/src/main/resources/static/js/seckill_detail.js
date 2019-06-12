@@ -39,7 +39,7 @@ var seckill = {
                         //1. 先禁用按钮
                         $(this).addClass('disabled');
                         //2. 发送秒杀请求，执行秒杀
-                        $.post(killUrl, {money: money}, function(result){
+                        $.post(killUrl, {price: money}, function(result){
                             if (result && result['success']){
                                 var killResult = result['data'];
                                 var stateInfo = killResult['stateInfo'];
@@ -99,14 +99,12 @@ var seckill = {
     detail: {
         //详情页初始化
         init: function (params) {
-            //1、进行手机验证
-            //在cookie中查询用户
-            var killPhone = $.cookie('killPhone');
-            //验证手机号
-            console.log("手机号"+ killPhone)
-            if (!seckill.validatePhone(killPhone)) {
-                window.location.href = "http://localhost:8080/seckill/loginpage"
+            var user=params['user'];
+            if(user == null)
+            {
+                window.location.href="/seckill/loginpage";
             }
+
             //已经登录
             //计时交互
             var startTime = params['startTime'];

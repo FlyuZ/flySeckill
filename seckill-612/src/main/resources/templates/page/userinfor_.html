@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <link rel="stylesheet" th:href="@{../../css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{../../css/seckill.css}"/>
+    <link rel="stylesheet" th:href="@{../../css/seckill_item.css}"/>
+    <link rel="stylesheet" th:href="@{../../css/public.css}"/>
+    <!-- FontAwesome Styles-->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <!--<link href="assets/css/font-awesome.css" rel="stylesheet" />-->
+    <link href="//cdn.bootcss.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Morris Chart Styles-->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
+    <!-- TABLE STYLES-->
+    <style>
+        label {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<style type="text/css">
+    table, th , td  {
+        border: 1px solid grey;
+        border-collapse: collapse;
+        padding: 5px;
+    }
+    table tr:nth-child(odd) {
+        background-color: #f1f1f2;
+    }
+    table tr:nth-child(even) {
+        background-color: #ffffff;
+    }
+</style>
+<body>
+<div>
+    <div th:replace="public/header :: header"></div>
+    <nav class="navbar-default navbar-side" role="navigation" >
+        <div class="sidebar-collapse" style="display: inline-block;float: left;width: 150px;text-align: center;">
+            <ul class="nav" id="main-menu">
+                <li>
+                    <a href="index.html"><i class="fa fa-bar-chart-o"></i> &nbsp;&nbsp;个人中心</a>
+                </li>
+                <li>
+                    <a href="category.html"><i class="fa fa-bars"></i> &nbsp;&nbsp;我的订单</a>
+                </li>
+                <li>
+                    <a href="article.html"><i class="fa fa-file-text-o"></i> &nbsp;&nbsp;我的地址</a>
+                </li>
+                <li>
+                    <a href="article.html"><i class="fa fa-file-text-o"></i> &nbsp;&nbsp;我的收藏</a>
+                </li>
+                <li>
+                    <a href="article.html"><i class="fa fa-file-text-o"></i> &nbsp;&nbsp;我的评论</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div id="center" style="position: absolute;margin-left: 150px;width: 100%;">
+        <table>
+            <tr>
+                <th></th>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+
+
+</div>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" th:src="@{../../js/bootstrap.min.js}"></script>
+<script>
+    $(function () {
+
+    });
+</script>
+</body>
+</html>

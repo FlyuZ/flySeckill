@@ -3,6 +3,7 @@ package com.nwafu.seckill.controller;
 import com.nwafu.seckill.dto.Exposer;
 import com.nwafu.seckill.dto.SeckillExecution;
 import com.nwafu.seckill.dto.SeckillResult;
+import com.nwafu.seckill.entity.Category;
 import com.nwafu.seckill.entity.Goods;
 import com.nwafu.seckill.entity.User;
 import com.nwafu.seckill.enums.SeckillStatEnum;
@@ -38,8 +39,10 @@ public class SeckillController {
 
     @RequestMapping("/list")
     public String findSeckillList(Model model) {
-        List<Goods> list = seckillService.findAll();
+        List<Goods> list = seckillService.findAllGoods();
+        //List<Category> categoryList = seckillService.findAllCategory();
         model.addAttribute("list", list);
+        //model.addAttribute("categoryList", categoryList);
         return "page/goods";
     }
 

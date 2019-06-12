@@ -15,7 +15,7 @@ public interface UserMapper {
     User userlogin(@Param("username") String username, @Param("password") String password);
 
     //注册用户
-    @Insert("INSERT INTO user (username,password,nickname) VALUES (#{username},#{password}, #{nickname")
+    @Insert("INSERT INTO user (username,password,nickname) VALUES (#{username},#{password}, #{nickname})")
     int adduser(@Param("username") String username, @Param("password") String password,
                 @Param("nickname") String nickname);
     /**

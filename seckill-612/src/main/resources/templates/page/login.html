@@ -9,7 +9,7 @@
     <link rel="stylesheet" th:href="@{../../css/lrtk.css}" type="text/css"/>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"/>
     <script type="text/javascript" th:src="@{../../js/vector.js}"></script>
-    <script type="text/javascript" th:src="@{../../lib/jquery.cookie.js}"></script>
+    <link rel="stylesheet" th:href="@{../../css/public.css}"/>
 </head>
 <body>
 <div id="login">
@@ -60,7 +60,7 @@
         $(function () {
             function isValid(str) {
                 return /^\d{11}$/.test(str);
-            }
+        }
 
 
             $("#submitBtn").click(function () {
@@ -87,7 +87,6 @@
                     async: false,
                     success: function (res) {
                         console.log(res)
-                        $.cookie('killPhone', username, {expires: 7, path: '/seckill/'});
                         window.location.href = res
                     },
                     error: function (err) {

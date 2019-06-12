@@ -8,6 +8,7 @@ import com.nwafu.seckill.enums.SeckillStatEnum;
 import com.nwafu.seckill.exception.RepeatKillException;
 import com.nwafu.seckill.exception.SeckillCloseException;
 import com.nwafu.seckill.exception.SeckillException;
+import com.nwafu.seckill.mapper.CategoryMapper;
 import com.nwafu.seckill.mapper.GoodsMapper;
 import com.nwafu.seckill.mapper.SeckillOrderMapper;
 import org.slf4j.Logger;
@@ -33,7 +34,7 @@ public class SeckillService {
     //设置盐值字符串，随便定义，用于混淆MD5值
     private final String salt = "byfeifei";
     //设置秒杀redis缓存的key
-    private final String key = "seckill";
+    private final String key ="";
 
     @Autowired
     private GoodsMapper goodsMapper;
@@ -42,9 +43,11 @@ public class SeckillService {
     private SeckillOrderMapper seckillOrderMapper;
 
     @Autowired
+    private CategoryMapper categoryMapper;
+    @Autowired
     private RedisTemplate redisTemplate;
 
-    public List<Goods> findAll() {
+    public List<Goods> findAllGoods() {
         List<Goods> goodsList = redisTemplate.boundHashOps("goods").values();
         if (goodsList == null || goodsList.size() == 0) {
             //说明缓存中没有秒杀列表数据
@@ -52,7 +55,7 @@ public class SeckillService {
             goodsList = goodsMapper.findAll();
             for (Goods goods : goodsList) {
                 //将秒杀列表数据依次放入redis缓存中，key:秒杀表的ID值；value:秒杀商品数据
-                redisTemplate.boundHashOps(key).put(goods.getGoodsId(), goods);
+                redisTemplate.boundHashOps("goods").put(goods.getGoodsId(), goods);
                 logger.info("商品findAll -> 从数据库中读取放入缓存中");
             }
         } else {
@@ -60,6 +63,23 @@ public class SeckillService {
         }
         return goodsList;
     }
+
+//    public List<Category> findAllCategory(){
+//        List<Category> categoryList = redisTemplate.boundHashOps("category").values();
+//        if (categoryList == null || categoryList.size() == 0) {
+//            //说明缓存中没有秒杀列表数据
+//            //查询数据库中秒杀列表数据，并将列表数据循环放入redis缓存中
+//            categoryList = categoryMapper.findAll();
+//            for (Category category : categoryList) {
+//                //将秒杀列表数据依次放入redis缓存中，key:秒杀表的ID值；value:秒杀商品数据
+//                redisTemplate.boundHashOps(key).put(category.getCategoryId(), category);
+//                logger.info("分类 -> 从数据库中读取放入缓存中");
+//            }
+//        } else {
+//            logger.info("分类 -> 从缓存中读取");
+//        }
+//        return categoryList;
+//    }
 
     public Goods findById(int GoodsId) {
         return goodsMapper.findById(GoodsId);

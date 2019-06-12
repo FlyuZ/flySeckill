@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>秒杀商品列表页</title>
-    <link rel="stylesheet" th:href="@{../../lib/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{../../css/bootstrap.min.css}"/>
     <link rel="stylesheet" th:href="@{../../css/seckill.css}"/>
     <link rel="stylesheet" th:href="@{../../css/seckill_item.css}"/>
     <link rel="stylesheet" th:href="@{../../css/public.css}"/>
@@ -26,33 +26,21 @@
     <div th:replace="public/header :: header"></div>
     <!--/. NAV TOP  -->
 
-    <nav class="navbar-default navbar-side" role="navigation" >
-        <div class="sidebar-collapse" style="display: inline-block;float: left;width: 150px;text-align: center">
-            <ul class="nav" id="main-menu">
-                <li>
-                    <a href="index.html"><i class="fa fa-bar-chart-o"></i> &nbsp;&nbsp;首页</a>
-                </li>
-                <li>
-                    <a href="category.html"><i class="fa fa-bars"></i> &nbsp;&nbsp;分类</a>
-                </li>
-                <li>
-                    <a href="article.html"><i class="fa fa-file-text-o"></i> &nbsp;&nbsp;xxx</a>
-                </li>
-                <li>
-                    <a href="comment.html"><i class="fa fa-envelope"></i> &nbsp;&nbsp;xxx</a>
-                </li>
-            </ul>
-        </div>
-        <div style="display: inline-block;margin-left: 20px;position: absolute">
+    <div th:replace="public/goodsguide :: goodsguide"></div>
+
+        <div style="margin-left: 160px; float:left;position:absolute;z-index: 999">
             <li class="show" th:each="item : ${list}">
                 <div class="img">
                     <img th:src="${item.image}"/>
                 </div>
                 <div class="title">
-                    <span th:text="${item.title}"></span>
+                    <span th:text="${item.goodsName}"></span>
                 </div>
                 <div class="price">
-                    <span>￥ <b th:text="${item.price}"></b></span>
+                    <span>原价：￥ <b th:text="${item.originalPrice}"></b></span>
+                </div>
+                <div class="price">
+                    <span>现价：￥ <b th:text="${item.currentPrice}"></b></span>
                 </div>
                 <div class="count">
                     <span>剩余库存： <b class="stock" th:text="${item.stockCount}"></b></span>
@@ -61,17 +49,43 @@
                     <span style="float:left;font-size: 13px;">结束时间：[[${#dates.format(item.endTime, 'yyyy-MM-dd HH:mm:ss')}]]</span>
                 </div>
                 <div class="buy">
-                    <a th:href="'/seckill/' + ${item.seckillId} + '/detail'" target="_blank">
+                    <a th:href="'/seckill/' + ${item.goodsId} + '/detail'" target="_blank">
                         <button style="width:100%" class="btn btn-success">立即抢购</button>
                     </a>
                 </div>
             </li>
         </div>
-    </nav>
 
 </div>
 
 </body>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<script type="text/javascript" th:src="@{../../lib/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{../../js/bootstrap.min.js}"></script>
+<script>
+    $(function () {
+        $("#categorydiv").hide()
+
+        $("#category").hover(
+            function () {
+                $("#categorydiv").show()
+
+            },
+            function () {
+                $("#categorydiv").hide()
+
+            }
+        );
+
+        $("#categorydiv").hover(
+            function () {
+                $("#categorydiv").show()
+
+            },
+            function () {
+                $("#categorydiv").hide()
+
+            }
+        );
+    })
+</script>
 </html>
