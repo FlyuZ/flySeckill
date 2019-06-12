@@ -40,4 +40,14 @@ public class Address {
     public void setAddressState(String addressState) {
         this.addressState = addressState == null ? null : addressState.trim();
     }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "addressId=" + addressId +
+                ", userId=" + userId +
+                ", address='" + address + '\'' +
+                ", addressState='" + addressState + '\'' +
+                '}';
+    }
 }
