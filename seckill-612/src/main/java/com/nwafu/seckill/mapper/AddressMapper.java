@@ -16,10 +16,10 @@ public interface AddressMapper {
     List<Address> findByUserId(@Param("userId")int userId);
 
     /**
-     * 根据用户ID，查默认地址表
+     * 根据地址ID，查地址表
      */
-    @Select("Select address form user where user_id = #{userId}")
-    String findDefaultAddress(@Param("userId") int userId);
+    @Select("Select address form user where address_id = #{addressId}")
+    Address findByAddressId(@Param("addressId") int addressId);
 
     /**
      * 添加地址表
@@ -36,9 +36,14 @@ public interface AddressMapper {
      */
 //    @Update("update address set address_state = #{addressState} where address_id = #{addressId}")
 //    int update(@Param("addressState") String address_state,@Param("addressId") int addressId);
-    /*
-    *降低至设置为默认地址
+    /**
+     * 将地址设置为默认地址
      */
     @Update("update user set address = #{address} where user_id = #{userId}")
-     String setDefaultAddress(@Param("address") String address,@Param("userId") int userId);
+     void setDefaultAddress(@Param("address") String address,@Param("userId") int userId);
+    /**
+     * 更新地址信息
+     */
+    @Update("update address set address = #{address} where address_id = #{addressId}")
+    void updateAddress(@Param("address") String address,@Param("addressId") int addressId);
 }
