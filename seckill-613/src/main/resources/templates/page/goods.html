@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>秒杀商品列表页</title>
+    <link rel="stylesheet" th:href="@{../../css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{../../css/seckill.css}"/>
+    <link rel="stylesheet" th:href="@{../../css/seckill_item.css}"/>
+    <link rel="stylesheet" th:href="@{../../css/public.css}"/>
+    <!-- FontAwesome Styles-->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <!--<link href="assets/css/font-awesome.css" rel="stylesheet" />-->
+    <link href="//cdn.bootcss.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Morris Chart Styles-->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
+    <!-- TABLE STYLES-->
+    <style>
+        label {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div>
+    <div th:replace="public/header :: goods_header"></div>
+    <!--/. NAV TOP  -->
+
+    <div th:replace="public/guide :: goods_guide"></div>
+
+        <div style="margin-left: 160px; float:left;position:absolute;z-index: 999">
+            <li class="show"  th:each="item : ${list}">
+                <div class="img">
+                    <img th:src="${item.image}"/>
+                </div>
+                <div class="title">
+                    <span th:text="${item.goodsName}"></span>
+                </div>
+                <div class="price">
+                    <span>原价：￥ <b th:text="${item.originalPrice}"></b></span>
+                </div>
+                <div class="price">
+                    <span>现价：￥ <b th:text="${item.currentPrice}"></b></span>
+                </div>
+                <div class="count">
+                    <span>剩余库存： <b class="stock" th:text="${item.stockCount}"></b></span>
+                </div>
+                <div>
+                    <span style="float:left;font-size: 13px;">结束时间：[[${#dates.format(item.endTime, 'yyyy-MM-dd HH:mm:ss')}]]</span>
+                </div>
+                <div class="buy">
+                    <a th:href="'/seckill/' + ${item.goodsId} + '/detail'" target="_blank">
+                        <button style="width:100%" class="btn btn-success">立即抢购</button>
+                    </a>
+                </div>
+            </li>
+        </div>
+
+</div>
+
+</body>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" th:src="@{../../js/bootstrap.min.js}"></script>
+<script>
+    $(function () {
+        $("#categorydiv").hide()
+
+        $("#category").hover(
+            function () {
+                $("#categorydiv").show()
+
+            },
+            function () {
+                $("#categorydiv").hide()
+
+            }
+        );
+
+        $("#categorydiv").hover(
+            function () {
+                $("#categorydiv").show()
+
+            },
+            function () {
+                $("#categorydiv").hide()
+
+            }
+        );
+    })
+</script>
+</html>
