@@ -1,24 +1,37 @@
 package com.nwafu.seckill.service;
 
-
-import com.nwafu.seckill.entity.User;
-import com.nwafu.seckill.mapper.UserMapper;
+import com.nwafu.seckill.entity.Collect;
+import com.nwafu.seckill.entity.Comment;
+import com.nwafu.seckill.entity.SeckillOrder;
+import com.nwafu.seckill.mapper.CollectMapper;
+import com.nwafu.seckill.mapper.CommentMapper;
+import com.nwafu.seckill.mapper.SeckillOrderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {
     @Autowired
-    private UserMapper userMapper;
+    private CommentMapper commentMapper;
 
-    //用户登录
-    public User userLogin(String username, String password) {
-        User user = userMapper.userlogin(username, password);
-        return user;
+    @Autowired
+    private SeckillOrderMapper seckillOrderMapper;
+
+    @Autowired
+    private CollectMapper collectMapper;
+    //评论
+    public List<Comment> findUserComment(int userId) {
+        return commentMapper.findByUserId(userId);
     }
 
-    //注册新用户
-    public int adduser(String username, String password, String nickname) {
-        return userMapper.adduser(username, password, nickname);
+    //订单
+    public List<SeckillOrder> findUserOrder(int userId) {
+        return seckillOrderMapper.findByUserId(userId);
+    }
+    //收藏
+    public List<Collect> findUserCollect(int userId){
+        return collectMapper.findByUserId(userId);
     }
 }

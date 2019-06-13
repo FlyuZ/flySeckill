@@ -24,6 +24,7 @@ public interface AddressMapper {
      * 删除地址表
      */
     void delete();
+
     /**
      * 设置为地址状态(默认、非默认)
      */

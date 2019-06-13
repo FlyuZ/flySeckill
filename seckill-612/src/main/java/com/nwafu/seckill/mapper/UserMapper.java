@@ -18,6 +18,7 @@ public interface UserMapper {
     @Insert("INSERT INTO user (username,password,nickname) VALUES (#{username},#{password}, #{nickname})")
     int adduser(@Param("username") String username, @Param("password") String password,
                 @Param("nickname") String nickname);
+
     /**
      * 修改个人信息
      */
