@@ -8,59 +8,55 @@ import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
-@RequestMapping("Address")
+@RequestMapping("seckill")
 public class AddressController
 {
     @Autowired
     private AddressService addressService;
 
     //进入地址详情列表
-    @GetMapping("list")
-    public String getAll(Model model, User user){
-        List<Address> addresses = addressService.getUsersAddress(user);
-        model.addAttribute("addresses",addresses);
-        return "address_list";
+    @GetMapping("userpage/address")
+    public String getAll(Model model, HttpServletRequest request){
+        User user = (User) request.getSession().getAttribute("session_user");
+        List<String[]> addresses = addressService.findByUserId(user.getUserId());
+        model.addAttribute("addresseList",addresses);
+        return "/page/address_list";
     }
 
     //添加新的地址
-    @PostMapping("add")
-    public String add(Address address){
-//        addressService.add(address);
-        return "redirect:/Address/list";
+    @PostMapping("userpage/add")
+    public String add(@RequestParam("addressText") String addressText,
+                      @RequestParam("name") String name,
+                      @RequestParam("phone") String phone,
+                      HttpServletRequest request){
+        String address = addressText + ',' + name + "," + phone;
+        User user = (User) request.getSession().getAttribute("session_user");
+        addressService.add(user.getUserId(), address);
+        return "redirect:/userpage/address";
     }
 
     //将已有地址设置为默认地址
-    @PostMapping("setDefaultAddress")
-    public String setDefaultAddress(Address address ){
-        addressService.setDefaultAddress(address);
-        return "redirect:/Address/list";
+    @PostMapping("userpage/setDefaultAddress")
+    public String setDefaultAddress(@RequestParam("addressText") String addressText,
+                                    @RequestParam("name") String name,
+                                    @RequestParam("phone") String phone,
+                                    HttpServletRequest request){
+        String address = addressText + ',' + name + "," + phone;
+        User user = (User) request.getSession().getAttribute("session_user");
+        addressService.setDefaultAddress(user.getUserId(), address);
+        return "redirect:/userpage/address";
     }
-    //获得要更新的地址信息
-    @GetMapping("update/{id}")
-    public String update(@PathVariable int userId,Model model){
-        model.addAttribute("addresses",addressService.findByUserId(userId));
-        return "address_update";
-    }
-    //更新地址信息
-    @PostMapping("update")
-    public String update(Address address){
-        Address address1 = addressService.findByAddressId(address.getAddressId());
-        address1.setAddress(address.getAddress());
-        addressService.updateAddress(address1.getAddressId(),address1.getAddress());
-        return "redirect:/Address/update";
-    }
+
     //删除地址
-    @PostMapping("delete/{id}")
-    public String delete(@PathVariable int addressId){
+    @GetMapping("userpage/delete")
+    public String delete(@RequestParam("addressId") int addressId){
         addressService.deleteAddress(addressId);
-        return "redirect:/Address/list";
+        return "redirect:/userpage/address";
     }
 }

@@ -16,11 +16,6 @@ public class BaseController {
      *
      * @return
      */
-	@RequestMapping("/infor")
-    public String testinfor() {
-        return "redirect:/seckill/user_center";
-    }
-	 
     @RequestMapping("/seckill")
     public String seckillGoods() {
         return "redirect:/seckill/list";

@@ -45,6 +45,8 @@ public class SeckillController {
         model.addAttribute("categoryList", categoryList);
         return "page/goods";
     }
+
+    //进入分类页
     @RequestMapping("/{categoryid}/}list")
     public String findCategoryList(@PathVariable("categoryid") int categoryid, Model model) {
         List<Goods> list = seckillService.findByCategory(categoryid);
@@ -94,12 +96,13 @@ public class SeckillController {
     @ResponseBody
     public SeckillResult<SeckillExecution> execute(@PathVariable("goodsId") int goodsId,
                                                    @PathVariable("md5") String md5,
-                                                   @RequestParam("price") double price,
                                                    HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("session_user");
         if (user == null) {
             return new SeckillResult<SeckillExecution>(false, "未注册");
         }
+        Goods goods = (Goods) seckillService.findById(goodsId);
+        double price = goods.getCurrentPrice();
         try {
             if(seckillService.executeSeckill(goodsId, user.getUserId(), md5)){
                 SeckillExecution execution = seckillService.insertOrder(user.getUserId(), goodsId,

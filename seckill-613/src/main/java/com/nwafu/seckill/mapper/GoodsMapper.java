@@ -38,7 +38,7 @@ public interface GoodsMapper {
      */
     @Update(" UPDATE goods\n" +
             "        SET stock_count = stock_count - 1\n" +
-            "        WHERE goods_id = #{goodsId}\n"+
+            "        WHERE goods_id = #{goodsId}\n" +
             "        AND start_time < #{killTime}\n" +
             "        AND end_time > #{killTime}\n" +
             "        AND stock_count > 0")

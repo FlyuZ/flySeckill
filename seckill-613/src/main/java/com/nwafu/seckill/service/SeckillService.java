@@ -3,6 +3,7 @@ package com.nwafu.seckill.service;
 import com.nwafu.seckill.dto.Exposer;
 import com.nwafu.seckill.dto.SeckillExecution;
 import com.nwafu.seckill.entity.Category;
+import com.nwafu.seckill.entity.Comment;
 import com.nwafu.seckill.entity.Goods;
 import com.nwafu.seckill.entity.SeckillOrder;
 import com.nwafu.seckill.enums.SeckillStatEnum;
@@ -10,6 +11,7 @@ import com.nwafu.seckill.exception.RepeatKillException;
 import com.nwafu.seckill.exception.SeckillCloseException;
 import com.nwafu.seckill.exception.SeckillException;
 import com.nwafu.seckill.mapper.CategoryMapper;
+import com.nwafu.seckill.mapper.CommentMapper;
 import com.nwafu.seckill.mapper.GoodsMapper;
 import com.nwafu.seckill.mapper.SeckillOrderMapper;
 import org.slf4j.Logger;
@@ -45,6 +47,9 @@ public class SeckillService {
 
     @Autowired
     private CategoryMapper categoryMapper;
+
+    @Autowired
+    private CommentMapper commentMapper;
 
     @Autowired
     private RedisTemplate redisTemplate;
@@ -88,10 +93,17 @@ public class SeckillService {
         return categoryList;
     }
 
-    public Goods findById(int GoodsId) {
-        return goodsMapper.findById(GoodsId);
+    //根据商品ID查找商品
+    public Goods findById(int goodsId) {
+        return goodsMapper.findById(goodsId);
     }
 
+    //返回该商品评论
+    public List<Comment> findGoodsComment(int goodsId){
+        return commentMapper.findByGoodsId(goodsId);
+    }
+
+    //返回秒杀接口
     public Exposer exportSeckillUrl(int goodsId) {
         Goods goods = (Goods) redisTemplate.boundHashOps(key).get(goodsId);
         if (goods == null) {
