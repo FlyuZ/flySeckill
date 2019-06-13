@@ -69,9 +69,8 @@ a {
     line-height: 30px;
     position: absolute ;
     z-index: 1000;
-    width: 100px;
-  /*background-color: rgb(238, 238, 238);*/
-    background-color: rgba(0,0,0,0);
+    width: 140px;
+    background-color :#fff ;
     border-style: outset;
     border-color: rgba(236,253,255,0.98);
     border-width: 1px;

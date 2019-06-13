@@ -3,15 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" th:href="@{../../js/bootstrap.min.css}"/>
 
-    <link rel="stylesheet" th:href="@{../../css/seckill.css}"/>
-    <link rel="stylesheet" th:href="@{../../css/public.css}"/>
-
-    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
 </head>
 <body>
-<div th:fragment="header">
+<div th:fragment="goods_header">
     <nav class="navbar navbar-default" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header" style="width: 100%">
@@ -25,12 +20,27 @@
                 <span  th:if="${session.session_user} != null"
                         style="float: right;height: inherit;margin-right: 30px;font-size: 18px;display: inline-block" id="logined">
                       <img th:src="${icon}" class="round_icon"  alt=""><p style="color: #8c8c8c;display: inline-block;font-size: 14px">
+                        &nbsp;欢迎，<span th:text="${session.session_user.username}"></span></p></a>
+                 </span>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<div th:fragment="information_header">
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header" style="width: 100%">
+                <a class="navbar-brand" href="#" style="font-size: 24px">个人中心</a>
+                <span style="float: right;height: inherit;margin-right: 30px;font-size: 18px;display: inline-block" id="logined">
+                      <img th:src="${icon}" class="round_icon"  alt=""><p style="color: #8c8c8c;display: inline-block;font-size: 14px">
                         &nbsp;欢迎，<span th:text="${session.user}"></span></p></a>
                  </span>
             </div>
         </div>
     </nav>
 </div>
+
 
 </body>
 </html>

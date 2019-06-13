@@ -12,16 +12,8 @@ var seckill = {
             return '/seckill/' + seckillId + '/' + md5 + '/execution';
         }
     },
-    //验证手机号
-    validatePhone: function (phone) {
-        if (phone && phone.length == 11 && !isNaN(phone)) {
-            return true;
-        } else {
-            return false;
-        }
-    },
     //处理秒杀逻辑
-    handleSeckill: function(seckillId, node, money){
+    handleSeckill: function(seckillId, node, price){
         //获取秒杀地址，控制显示逻辑，执行秒杀
         node.hide().html('<button class="btn btn-primary btn-lg" id="killBtn">开始秒杀</button>');
         $.post(seckill.URL.exposer(seckillId), {}, function(result){
@@ -39,7 +31,7 @@ var seckill = {
                         //1. 先禁用按钮
                         $(this).addClass('disabled');
                         //2. 发送秒杀请求，执行秒杀
-                        $.post(killUrl, {price: money}, function(result){
+                        $.post(killUrl, { "price" : price}, function(result){
                             if (result && result['success']){
                                 var killResult = result['data'];
                                 var stateInfo = killResult['stateInfo'];
@@ -62,7 +54,7 @@ var seckill = {
         });
     },
     //计时
-    countdown: function (seckillId, nowTime, startTime, endTime, money) {
+    countdown: function (seckillId, nowTime, startTime, endTime, price) {
         var seckillBox = $('#seckill-box');
         var seckillTimeSpan = $('#seckill-time-span');
         //时间判断
@@ -80,11 +72,11 @@ var seckill = {
                 //时间完成后回调事件
             }).on('finish.countdown', function(){
                 //获取秒杀地址，控制实现逻辑，执行秒杀
-                seckill.handleSeckill(seckillId, seckillBox, money);
+                seckill.handleSeckill(seckillId, seckillBox, price);
             });
         }else{
             //秒杀开始
-            seckill.handleSeckill(seckillId, seckillBox, money);
+            seckill.handleSeckill(seckillId, seckillBox, price);
 
             //计时
             var killEndTime = new Date(endTime + 1000);
@@ -110,12 +102,12 @@ var seckill = {
             var startTime = params['startTime'];
             var endTime = params['endTime'];
             var seckillId = params['seckillId'];
-            var money = params['money'];
+            var price = params['price'];
             $.get(seckill.URL.now(), {}, function (result) {
                 if (result && result['success']) {
                     var nowTime = result['data'];
                     //时间判断
-                    seckill.countdown(seckillId, nowTime, startTime, endTime, money);
+                    seckill.countdown(seckillId, nowTime, startTime, endTime, price);
                 } else {
                     console.log('result:' + result);
                 }

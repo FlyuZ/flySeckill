@@ -30,8 +30,9 @@ public interface SeckillOrderMapper {
     /**
      * 根据秒杀用户ID查询该用户的所有订单明细数据
      */
-    List<SeckillOrder> findByUserId();
+    @Select("SELECT * FROM seckill_order where user_id = #{userId}")
+    List<SeckillOrder> findByUserId(@Param("userId") int userId);
 
-    @Select("SELECT * FROM seckill_order where user_id = #{userId}, goods_id = #{goodsId}")
-    SeckillOrder findExist(@Param("userId") int userId, @Param("goodsId") int goodsId);
+    @Select("select count(*) from seckill_order where user_id = #{userId} AND goods_id = #{goodsId}")
+    int findExist(@Param("userId") int userId, @Param("goodsId") int goodsId);
 }

@@ -23,13 +23,13 @@
 <body>
 
 <div>
-    <div th:replace="public/header :: header"></div>
+    <div th:replace="public/header :: goods_header"></div>
     <!--/. NAV TOP  -->
 
-    <div th:replace="public/goodsguide :: goodsguide"></div>
+    <div th:replace="public/guide :: goods_guide"></div>
 
         <div style="margin-left: 160px; float:left;position:absolute;z-index: 999">
-            <li class="show" th:each="item : ${list}">
+            <li class="show"  th:each="item : ${list}">
                 <div class="img">
                     <img th:src="${item.image}"/>
                 </div>

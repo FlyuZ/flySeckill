@@ -32,13 +32,13 @@
                             <label class="focus" id="label2"><span>1-8位</span></label>
                         </div>
                     </div>
-                    <div class="item col-xs-12">
-                        <span class="intelligent-label f-fl"><b class="ftx04">*</b>邮箱</span>
-                        <div class="f-fl item-ifo">
-                            <input id="Email" type="text" maxlength="30" class="txt03 f-r3 required"/>
-                            <label class="focus" id="label5" style="display:none;color:#f00;">邮箱格式错误</label>
-                        </div>
-                    </div>
+                    <!--<div class="item col-xs-12">-->
+                        <!--<span class="intelligent-label f-fl"><b class="ftx04">*</b>邮箱</span>-->
+                        <!--<div class="f-fl item-ifo">-->
+                            <!--<input id="Email" type="text" maxlength="30" class="txt03 f-r3 required"/>-->
+                            <!--<label class="focus" id="label5" style="display:none;color:#f00;">邮箱格式错误</label>-->
+                        <!--</div>-->
+                    <!--</div>-->
                     <div class="item col-xs-12">
                         <span class="intelligent-label f-fl"><b class="ftx04">*</b>密码：</span>
                         <div class="f-fl item-ifo">
@@ -77,17 +77,17 @@
             return /^\d{11}$/.test(str);
         }
 
-        function isValidEmail(str) {
-            return /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/.test(str);
-        }
+        // function isValidEmail(str) {
+        //     return /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/.test(str);
+        // }
 
         function initial() {
             $("#label1").css('color', '#999')
             $("#phoneNumber").css('border-color', '')
             $("#label2").css('color', '#999')
             $("#nickName").css('border-color', '')
-            $("#Email").css('border-color', '')
-            $("#label5").hide()
+            // $("#Email").css('border-color', '')
+            // $("#label5").hide()
             $("#label3").css('color', '#999')
             $("#pwd").css('border-color', '')
             $("#label4").css('color', '#999')
@@ -99,7 +99,7 @@
             initial()
             var phonenumber = $("#phoneNumber").val()
             var nickname = $("#nickName").val()
-            var email = $("#Email").val()
+           // var email = $("#Email").val()
             var pwd = $("#pwd").val()
             var surepwd = $("#surepwd").val()
 
@@ -113,11 +113,11 @@
                 $("#nickName").css('border-color', '#f00')
                 return
             }
-            if (!isValidEmail(email)) {
-                $("#Email").css('border-color', '#f00')
-                $("#label5").show()
-                return
-            }
+            // if (!isValidEmail(email)) {
+            //     $("#Email").css('border-color', '#f00')
+            //     $("#label5").show()
+            //     return
+            // }
 
             if (!isValid(pwd) || pwd.length < 6 || pwd.length > 20) {
                 $("#label3").css('color', '#f00')
@@ -142,14 +142,17 @@ console.log(phonenumber)
                 data: {
                     "username": phonenumber,
                     "password": pwd,
-                    // "mail": email,
                     "nickname": nickname
                 },
                 dataType: 'text',
                 success: function (res) {
-                    console.log(res);
+                    if( res == "succsee")
+                        window.location.href="loginpage";
+                    else
+                        alert("注册失败,请稍后再试！！！");
                 },
                 error: function (err) {
+                    alert("注册失败,请稍后再试！！！");
                     console.log(err);
                 }
             });

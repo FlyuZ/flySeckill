@@ -37,10 +37,10 @@ public interface GoodsMapper {
      * @return 返回此SQL更新的记录数，如果>=1表示更新成功
      */
     @Update(" UPDATE goods\n" +
-            "        SET stock_count = stockCount - 1\n" +
-            "        WHERE goods_id = #{goodsId}\n" +
-            "        AND start_time &lt;= #{killTime}\n" +
-            "        AND end_time &gt;= #{killTime}\n" +
-            "        AND stock_count &gt; 0")
+            "        SET stock_count = stock_count - 1\n" +
+            "        WHERE goods_id = #{goodsId}\n"+
+            "        AND start_time < #{killTime}\n" +
+            "        AND end_time > #{killTime}\n" +
+            "        AND stock_count > 0")
     int reduceStock(@Param("goodsId") int goodsId, @Param("killTime") Date killTime);
 }

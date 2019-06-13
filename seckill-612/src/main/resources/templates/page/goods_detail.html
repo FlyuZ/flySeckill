@@ -23,10 +23,10 @@
 <body>
 
 <div>
-    <div th:replace="public/header :: header"></div>
+    <div th:replace="public/header :: information_header"></div>
     <!--/. NAV TOP  -->
 
-    <div th:replace="public/goodsguide :: goodsguide"></div>
+    <div th:replace="public/guide :: goods_guide"></div>
 
         <div style="margin-left: 160px;float:left">
             <div class="fl preview-wrap" style="display: inline-list-item;float:left;position: absolute;width: 300px">
@@ -114,7 +114,7 @@
             seckillId: [[${goods.goodsId}]],
             startTime: [[${goods.startTime.time}]],//毫秒
             endTime: [[${goods.endTime.time}]],
-            money: [[${goods.currentPrice}]], //秒杀价钱
+            price: [[${goods.currentPrice}]], //秒杀价钱
             user: [[${session.session_user}]]
         });
     });

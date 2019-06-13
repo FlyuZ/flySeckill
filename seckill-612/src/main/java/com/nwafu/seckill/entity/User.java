@@ -70,4 +70,17 @@ public class User {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", mailbox='" + mailbox + '\'' +
+                ", icon='" + icon + '\'' +
+                ", address='" + address + '\'' +
+                '}';
+    }
 }

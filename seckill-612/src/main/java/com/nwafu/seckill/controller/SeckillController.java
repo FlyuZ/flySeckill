@@ -40,9 +40,17 @@ public class SeckillController {
     @RequestMapping("/list")
     public String findSeckillList(Model model) {
         List<Goods> list = seckillService.findAllGoods();
-        //List<Category> categoryList = seckillService.findAllCategory();
+        List<Category> categoryList = seckillService.findAllCategory();
         model.addAttribute("list", list);
-        //model.addAttribute("categoryList", categoryList);
+        model.addAttribute("categoryList", categoryList);
+        return "page/goods";
+    }
+    @RequestMapping("/{categoryid}/}list")
+    public String findCategoryList(@PathVariable("categoryid") int categoryid, Model model) {
+        List<Goods> list = seckillService.findByCategory(categoryid);
+        List<Category> categoryList = seckillService.findAllCategory();
+        model.addAttribute("list", list);
+        model.addAttribute("categoryList", categoryList);
         return "page/goods";
     }
 
