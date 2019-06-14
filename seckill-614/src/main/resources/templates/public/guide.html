@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <div th:fragment="goods_guide">
+      <nav class="navbar-default navbar-side" role="navigation" >
+          <div class="sidebar-collapse" style="display: inline-block;float: left;width: 150px;text-align: center;">
+              <ul class="nav" style="height: 100%; width: inherit;" id="main-menu_goods">
+                  <li>
+                      <a href="/seckill"><i class="fa fa-bar-chart-o"></i> &nbsp;&nbsp;首页</a>
+                  </li>
+                  <li id="category">
+                      <a><i class="fa fa-bars"></i> &nbsp;&nbsp;分类</a>
+                  </li>
+              </ul>
+          </div>
+
+
+          <div id="categorydiv"  class="category">
+              <ul style="list-style: none;">
+                  <li><a href="/seckill/1/list"  >数&nbsp;&nbsp;码</a></li>
+                  <li><a href="/seckill/2/list"  >服&nbsp;&nbsp;饰</a></li>
+                  <li><a href="/seckill/3/list"  >食&nbsp;&nbsp;品</a></li>
+                  <li><a href="/seckill/4/list"  >图&nbsp;&nbsp;书</a></li>
+              </ul>
+
+          </div>
+      </nav>
+  </div>
+
+<div th:fragment="information_guide">
+    <nav class="navbar-default navbar-side" role="navigation" >
+        <div class="sidebar-collapse" style="display: inline-block;float: left;width: 150px;text-align: center;height: 100%">
+            <ul class="nav" id="main-menu_information">
+                <li>
+                    <a href="/seckill"><i class="fa fa-bar-chart-o"></i> &nbsp;&nbsp;首&nbsp;&nbsp;&nbsp;&nbsp;页</a>
+                </li>
+                <li>
+                    <a href="/seckill/user_center"><i class="fa fa-bar-chart-o"></i> &nbsp;&nbsp;个人中心</a>
+                </li>
+                <li>
+                    <a href="/infor/order"><i class="fa fa-bars"></i> &nbsp;&nbsp;我的订单</a>
+                </li>
+                <li>
+                    <a href="/infor/collection"><i class="fa fa-file-text-o"></i> &nbsp;&nbsp;我的收藏</a>
+                </li>
+                <li>
+                    <a href="/infor/comment"><i class="fa fa-file-text-o"></i> &nbsp;&nbsp;我的评论</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+</body>
+</html>
