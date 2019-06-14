@@ -1,7 +1,11 @@
 server:
   port: 8080
+web:
+  upload-path: c:/icon
 
 spring:
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,classpath:/upload/,classpath:/, file:${web.upload-path}
   datasource:
     name: springboot
     type: com.alibaba.druid.pool.DruidDataSource

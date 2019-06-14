@@ -34,24 +34,36 @@
     }
 </style>
 <body>
-<div th:if="${session.session_user}!= null">
+<div th:if="${session.session_user}!= null" style="height: 1000px">
     <div th:replace="public/header :: information_header"></div>
     <div th:replace="public/guide :: information_guide"></div>
-    <div id="center" style="position: absolute;margin-left: 150px;width: 100%;">
+    <div id="center" style="position: absolute;margin-left: 150px;width: 700px;">
         <div id="information_table">
-            <span><input type="image" disabled="disabled"/></span>
-            <ul>
-                <li>昵称：<input id="nickname" th:value="${session.session_user.nickname}" disabled="disabled"/></li>
-                <li>邮箱：<input id="email" th:value="${session.session_user.mailbox}" disabled="disabled"/></li>
-            </ul>
-            <button id="information_alter">修改</button>
-            <button id="information_save" style="display: none">保存</button>
-            <button id="information_back" style="display: none">取消</button>
+            <form method="post" action="/seckill/upload" enctype="multipart/form-data" style="height: 180px;width: 180px;display: inline-block; margin-left: 30px; margin-top: 30px">
+                <img style="height: 100px;width: 100px;" th:src="@{${session.session_user.icon}}"/>
+                <p>请选择头像:<input type = "file" name="fileName"/></p>
+                <button type="submit">提交</button>
+            </form>
+            <div style="float: left;display: inline-block;margin-left: 60px;text-align: center;margin-top: 100px;position: absolute">
+                <div class="input-group">
+                    <span class="input-group-addon">昵称：</span>
+                    <input type="text" class="form-control" id="nickname" th:value="${session.session_user.nickname}" width="10px" disabled="disabled"/>
+                </div>
+                <br/>
+                <div class="input-group">
+                    <span class="input-group-addon">邮箱：</span>
+                    <input type="text" class="form-control" id="email" th:value="${session.session_user.mailbox}" width="10px" disabled="disabled"/>
+                </div>
+               <br/>
+               <button id="information_alter" class="btn btn-info" >修改</button>
+               <button id="information_save" class="btn btn-info" style="display: none">保存</button>
+               <button id="information_back" class="btn btn-warning" style="display: none">取消</button>
+            </div>
         </div>
     </div>
 
-    <div id="addresses" style="position: absolute;margin-left: 150px;width: 900px;border-width: 1px;border-color: #ff7d25;border-style: solid;margin-top: 150px">
-        <p>新增收货地址：</p>
+    <div id="addresses" style="float: left;position: absolute;margin-top:280px;margin-left: 150px;width: 700px;border-width: 1px;border-color: #ff7d25;border-style: solid;" class="col-lg-6">
+        <div class="panel-heading"><p>新增收货地址：</p></div>
         <div id="newaddress_table" >
             <ul>
                 <li>
@@ -66,17 +78,17 @@
                     &nbsp;&nbsp;&nbsp;手机号码：<input id="telephone" maxlength="11" style="height: 30px;width: 500px;" placeholder="请填写手机号码"/>
                 </li>
             </ul>
-            <button class="btn-primary" id="sbtaddress">确认</button>
+            <button class="btn btn-info" id="sbtaddress" style="text-align: center;margin-bottom: 11px;margin-left: 520px">确认</button>
         </div>
     </div>
-    <div style="margin-top: 420px;float: top;margin-left: 150px" th:if="${addressList} != null">
+    <div style="margin-top: 576px;float: top;margin-left: 150px" th:if="${addressList} != null">
         <p>已保存地址：</p>
-        <table id="addresstable" width="800px">
+        <table id="addresstable" style="width: 700px;text-align: center">
             <tr>
                 <th style="width: 140px">收货人</th>
                 <th style="width: 300px">详细地址</th>
                 <th style="width: 100px">电话</th>
-                <th style="width: 200px">操作</th>
+                <th style="width: 350px">操作</th>
             </tr>
             <!---->
             <!--<tr   th:each="row : ${addressList}" th:id="${row.addressId}" >-->
@@ -87,10 +99,10 @@
             <!--</tr>-->
 
             <tr   th:each="row : ${addressList}" th:id="${row.addressId}" >
-                <td style="width: 140px"><input disabled="disabled" type="text" th:value="${row.name}"/></td>
-                <td style="width: 300px"><input disabled="disabled" type="text" th:value="${row.addressText}"/></td>
-                <td style="width: 100px"><input disabled="disabled" type="text"  th:value="${row.phone}"/></td>
-                <td style="width: 200px"><button class="btn-blue default">设置为默认地址</button><button class="btn-danger delete">删除</button></td>
+                <td style="width: 140px" th:text="${row.name}"></td>
+                <td style="width: 300px" th:text="${row.addressText}"></td>
+                <td style="width: 100px" th:text="${row.phone}"></td>
+                <td style="width: 100px"><button class="default btn btn-info">设置为默认地址</button>&nbsp;&nbsp;<button class="delete btn btn-warning">删除</button></td>
             </tr>
 
         </table>
@@ -114,7 +126,7 @@
             $("#information_back").show()
 
             $("#information_table span input").removeAttr("disabled");
-            $("#information_table ul li input").removeAttr("disabled");
+            $("#information_table div input").removeAttr("disabled");
 
         });  //点击用户数据修改按钮
 
@@ -135,10 +147,10 @@
         });   //点击用户数据取消按钮
 
         $("#information_save").click(function () {
-             var icon=$("#information_table span input")
+            var icon=$("#information_table span input")
 
-             var nickname=$("#nickname")
-             var email=$("#email")
+            var nickname=$("#nickname")
+            var email=$("#email")
 
 
             if(!isValidEmail(email.val()))
@@ -148,10 +160,10 @@
                 return;
             }
             $.ajax({
-               url:"/infor/update/"+[[${session.session_user.username}]],
+                url:"/infor/update/"+[[${session.session_user.username}]],
                 type:"POST",
                 data:{"nickname":nickname.val(),
-                      "mailbox":email.val()
+                    "mailbox":email.val()
                 },
                 dataType:"",
                 success:function (res) {
@@ -248,7 +260,7 @@
             var telephone=$("#telephone").val()
             if(address=="")
             {
-                  alert("地址为空！！！")
+                alert("地址为空！！！")
                 return;
             }
             if(receive_name==""){
@@ -270,12 +282,12 @@
                 dataType:"text",
                 success: function (res) {
                     if(res == "success")
-                        // $("#addresstable tr:first").after( "<tr  id="+res+">"+
-                        //     " <td style='width: 140px'><input type='text' value="+receive_name+"/><span  class='flag' style='background-color: #ff8e0f;display: none'>默认地址</span></td>"+
-                        //     " <td style='width: 300px'><input type='text' value="+address+"/></td>"+
-                        //     " <td style='width: 100px'><input type='text' value="+telephone+"/></td>"+
-                        //     " <td style='width: 200px'><button  class='btn alter'>修改</button><button class='btn-blue default'>设置为默认地址</button><button class='btn-danger delete'>删除</button></td></tr>")
-                      window.location.reload();
+                    // $("#addresstable tr:first").after( "<tr  id="+res+">"+
+                    //     " <td style='width: 140px'><input type='text' value="+receive_name+"/><span  class='flag' style='background-color: #ff8e0f;display: none'>默认地址</span></td>"+
+                    //     " <td style='width: 300px'><input type='text' value="+address+"/></td>"+
+                    //     " <td style='width: 100px'><input type='text' value="+telephone+"/></td>"+
+                    //     " <td style='width: 200px'><button  class='btn alter'>修改</button><button class='btn-blue default'>设置为默认地址</button><button class='btn-danger delete'>删除</button></td></tr>")
+                        window.location.reload();
                     else
                     {
                         alert("添加地址失败！！！");

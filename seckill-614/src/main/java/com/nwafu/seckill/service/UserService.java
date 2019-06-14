@@ -38,8 +38,14 @@ public class UserService {
     }
 
     //评论
-    public List<Comment> findUserComment(int userId) {
-        return commentMapper.findByUserId(userId);
+    public List<CommentTemp> findUserComment(int userId) {
+        List<Comment> comments = commentMapper.findByUserId(userId);
+        List<CommentTemp> commentTemps = new ArrayList<>();
+        for(Comment comment : comments){
+            Goods goods = goodsMapper.findById(comment.getGoodsId());
+            commentTemps.add(new CommentTemp(comment.getGoodsId(), comment.getUserId(),comment.getCommentText(), goods.getGoodsName(), goods.getImage()));
+        }
+        return commentTemps;
     }
 
     //订单

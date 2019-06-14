@@ -19,7 +19,7 @@
                  </span>
                 <span  th:if="${session.session_user} != null"
                         style="float: right;height: inherit;margin-right: 30px;font-size: 18px;display: inline-block" id="logined">
-                 <a href="/seckill/user_center">     <img th:src="${icon}" class="round_icon"  alt=""><p style="color: #8c8c8c;display: inline-block;font-size: 14px">
+                 <a href="/seckill/user_center">     <img th:src="@{${session.session_user.icon}}" class="round_icon"  alt=""><p style="color: #8c8c8c;display: inline-block;font-size: 14px">
                         &nbsp;欢迎，<span th:text="${session.session_user.nickname}"></span></p></a>
                  </span>
             </div>

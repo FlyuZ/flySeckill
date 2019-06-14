@@ -35,4 +35,9 @@ public interface UserMapper {
      */
     @Select("Select * from user")
     List<User> getUsers();
+    /**
+     * 存储文件名
+     */
+    @Update("UPDATE user set icon=#{icon} where user_id = #{userId}")
+    int addIcon(@Param("icon")String icon,@Param("userId") Integer userId);
 }

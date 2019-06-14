@@ -43,8 +43,8 @@
         </span>
         <div>
             <div th:each="item : ${test}" style="height: 150px">
-                <span>商品:<p th:text="${item.}"></p> </span>
-                <span>时间<p th:text="${item.}"></p></span>
+                <span style="display: inline-block">商品:<p th:text="${item.}"></p> </span>
+                <span style="display: inline-block;float: left">时间<p th:text="${item.}"></p></span>
                 <div>
                     <span th:text=""></span>
                 </div>
