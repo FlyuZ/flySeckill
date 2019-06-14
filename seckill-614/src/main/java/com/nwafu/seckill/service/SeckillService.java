@@ -188,7 +188,7 @@ public class SeckillService {
     @Transactional
     public SeckillExecution insertOrder(int userId, int goodsId, String state, String address, double price) {
         Date nowTime = new Date();
-        String orderNo = "1010"+ nowTime.toString() + userId; //自动生成订单编码
+        String orderNo = "1010"+ goodsId + userId; //自动生成订单编码
         if (address == null) {
             address = "";
         }

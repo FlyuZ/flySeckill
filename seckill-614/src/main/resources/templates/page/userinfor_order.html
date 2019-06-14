@@ -34,7 +34,7 @@
     }
 </style>
 <body>
-<div>
+<div th:if="${session.session_user} != null">
     <div th:replace="public/header :: information_header"></div>
     <div th:replace="public/guide :: information_guide"></div>
     <div id="order" style="position: absolute;margin-left: 150px;width: 100%;">
@@ -42,14 +42,14 @@
             <h2>我的订单</h2>
         </span>
         <div>
-            <div th:each="item : ${test}" style="height: 150px">
-                <div><img th:src=""></div>
+            <div th:each="item : ${seckillOrders}" style="height: 150px">
+                <!--<div><img th:src=""></div>-->
                 <div>
-                    <span><p th:text="${item.}"></p> </span>
-                    <span>购买时间:<p th:text="${item.}"></p></span>
-                    <span>地址:<p th:text="${item.}"></p></span>
-                    <span>电话:<p th:text="${item.}"></p></span>
-                    <span>价格:<p th:text="${item.}"></p></span>
+                    <span>状态<p th:text="${item.state}"></p> </span>
+                    <span>购买时间:<p th:text="${item.createTime}"></p></span>
+                    <!--<span>地址:<p th:text="${item.}"></p></span>-->
+                    <!--<span>电话:<p th:text="${item.}"></p></span>-->
+                    <!--<span>价格:<p th:text="${item.}"></p></span>-->
                 </div>
             </div>
         </div>

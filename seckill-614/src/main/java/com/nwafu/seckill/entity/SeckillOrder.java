@@ -15,6 +15,7 @@ public class SeckillOrder {
     private String orderNo;
 
     private String state;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;

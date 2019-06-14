@@ -111,6 +111,7 @@
         $("#information_alter").click(function () {
             $(this).hide()
             $("#information_save").show()
+            $("#information_back").show()
 
             $("#information_table span input").removeAttr("disabled");
             $("#information_table ul li input").removeAttr("disabled");
@@ -128,6 +129,7 @@
             email.attr("disabled","disabled");
             icon.attr("disabled","disabled");
             $("#information_save").hide();
+            $("#information_back").hide();
             $("#information_alter").show();
 
         });   //点击用户数据取消按钮
@@ -159,6 +161,7 @@
                         email.attr("disabled","disabled");
                         icon.attr("disabled","disabled");
                         $("#information_save").hide();
+                        $("#information_back").hide();
                         $("#information_alter").show();
                         alert("更新成功")
                     }
@@ -168,6 +171,7 @@
                         email.attr("disabled","disabled");
                         icon.attr("disabled","disabled");
                         $("#information_save").hide();
+                        $("#information_back").hide();
                         $("#information_alter").show();
                         alert("更新失败")
                     }

@@ -1,16 +1,11 @@
 package com.nwafu.seckill.service;
 
-import com.nwafu.seckill.entity.Collect;
-import com.nwafu.seckill.entity.Comment;
-import com.nwafu.seckill.entity.SeckillOrder;
-import com.nwafu.seckill.entity.User;
-import com.nwafu.seckill.mapper.CollectMapper;
-import com.nwafu.seckill.mapper.CommentMapper;
-import com.nwafu.seckill.mapper.SeckillOrderMapper;
-import com.nwafu.seckill.mapper.UserMapper;
+import com.nwafu.seckill.entity.*;
+import com.nwafu.seckill.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,11 +22,21 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
-    public void updateUser(String username,String nickname,String mailbox){userMapper.update(nickname,mailbox,username);}
+    @Autowired
+    private GoodsMapper goodsMapper;
 
-    public User findByName(String username){
+    public void updateUser(String username, String nickname, String mailbox) {
+        userMapper.update(nickname, mailbox, username);
+    }
+
+    public User findByName(String username) {
         return userMapper.getByName(username);
     }
+
+    public void inserIcon(String filename, int userId) {
+      //  userMapper.addIcon(filename, userId);
+    }
+
     //评论
     public List<Comment> findUserComment(int userId) {
         return commentMapper.findByUserId(userId);
@@ -43,7 +48,12 @@ public class UserService {
     }
 
     //查看所有收藏
-    public List<Collect> findUserCollect(int userId){
-        return collectMapper.findByUserId(userId);
+    public List<Goods> findUserCollect(int userId) {
+        List<Collect> collects = collectMapper.findByUserId(userId);
+        List<Goods> goodsList = new ArrayList<>();
+        for(Collect collect : collects){
+            goodsList.add(goodsMapper.findById(collect.getGoodsId()));
+        }
+        return goodsList;
     }
 }

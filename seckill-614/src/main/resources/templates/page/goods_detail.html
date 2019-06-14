@@ -22,20 +22,29 @@
 </head>
 <body>
 
-<div>
+<div th:if="${session.session_user} != null">
     <div th:replace="public/header :: goods_header"></div>
     <!--/. NAV TOP  -->
 
     <div th:replace="public/guide :: goods_guide"></div>
 
-        <div style="margin-left: 160px;float:left">
+    <div style="z-index:1001; height: 35px;width: 35px; margin-top: 20px;margin-left: 590px;">
+        <img id="uncollect"  th:src="@{../../img/tri_collect.png}" style="height: auto;width: auto" title="取消收藏"/>
+    </div>
+
+    <div style="z-index:1001; height: 35px;width: 35px; margin-top: 20px;margin-left: 590px; ">
+        <img id="collect" th:src="@{../../img/tri.png}" style="height: auto;width: auto;" title="点击收藏"/>
+    </div>
+
+
+        <div style="margin-left: 160px;float:left;z-index: 999">
             <div class="fl preview-wrap" style="display: inline-list-item;float:left;position: absolute;width: 300px">
                 <div id="preview" class="spec-preview">
                     <span class="jqzoom"><img th:src="${goods.image}" alt=""/></span>
                 </div>
             </div>
 
-            <div class="fr itemInfo-wrap" style="height: 300px;width:400px; display: inline-list-item;float:left ;position: absolute ;margin-left: 400px">
+            <div class="fr itemInfo-wrap" style="z-index: 999;height: 300px;width:400px; display: inline-list-item;float:left ;position: absolute ;margin-left: 400px">
                 <div class="sku-name">
                     <h4 th:text="${goods.goodsName}"></h4>
                 </div>
@@ -86,7 +95,86 @@
 <script type="text/javascript" th:src="@{../../js/seckill_detail.js}"></script>
 <script type="text/javascript" th:inline="javascript">
     $(function () {
+        var collect_flag= [[${collectFlag}]];
+        var user=[[${session.session_user}]];
+        if( user == null)
+        {
+           if(window.confirm("您还未登录,请登录后访问！！！"))
+           {
+               window.close()
+           }
+           else
+           {
+               window.close()
+           }
+        }
+
+        if(collect_flag == false)
+        {
+            $("#collect").parent().show()
+            $("#uncollect").parent().hide()
+        }
+        else
+        {
+            $("#collect").parent().hide()
+            $("#uncollect").parent().show()
+        }
+
         $("#categorydiv").hide()
+
+        $("#collect").click(function () {
+            $.ajax({
+                url:"/seckill/"+[[${goods.goodsId}]]+"/insertCollect",
+                type:"POST",
+                dataType:"text",
+                data:{},
+                success:function (res) {
+                    if(res == "success")
+                    {
+                        $("#collect").parent().hide()
+
+                        alert("收藏成功！！！")
+
+                        $("#uncollect").parent().show()
+                    }
+                    else
+                    {
+
+                        alert("收藏失败！！！")
+                    }
+                },
+                error:function (err) {
+                    console.log(err)
+                    alert("收藏失败！！！")
+                }
+            });
+        });
+
+        $("#uncollect").click(function () {
+            $.ajax({
+                url:"/seckill/"+[[${goods.goodsId}]]+"/deleteCollect",
+                type:"POST",
+                dataType:"text",
+                data:{},
+                success:function (res) {
+                    if(res == "success")
+                    {
+                        $("#collect").parent().show()
+                        alert("取消收藏成功！！！")
+                        $("#uncollect").parent().hide()
+                    }
+                    else
+                    {
+                       alert("取消收藏失败！！！")
+                    }
+                },
+                error:function (err) {
+                    console.log(err)
+                    alert("取消收藏失败！！！")
+                }
+            });
+        });
+
 
         $("#category").hover(
             function () {

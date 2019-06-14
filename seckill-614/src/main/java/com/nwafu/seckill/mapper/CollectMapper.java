@@ -13,7 +13,7 @@ public interface CollectMapper {
     /**
      * 根据用户ID查所有收藏商品信息
      */
-    @Select("SECLECT * FROM collect WHERE user_id = #{userId}")
+    @Select("SELECT * FROM collect WHERE user_id = #{userId}")
     List<Collect> findByUserId(@Param("userId") int userId);
 
     /**

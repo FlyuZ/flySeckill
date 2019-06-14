@@ -34,22 +34,23 @@
     }
 </style>
 <body>
-<div>
+<div th:if="${session.session_user} != null">
     <div th:replace="public/header :: information_header"></div>
     <div th:replace="public/guide :: information_guide"></div>
 
-    <div id="collection" style="position: absolute;margin-left: 150px;width: 100%;">
+    <div id="collection" style="position: absolute;margin-left: 150px;width: 100%;" >
         <span >
             <h2>我的收藏</h2>
         </span>
         <div>
-            <div th:each="item : ${test}" style="height: 150px">
-                <div><img th:src=""></div>
-                <div>
-                <span>原价:<p th:text="${item.}"></p> </span>
-                <span>现价:<p th:text="${item.}"></p></span>
-                <span>库存:<p th:text="${item.}"></p></span>
-                <span> <a th:href="'/seckill/' + ${item.} + '/detail'" target="_blank"><button>去购买</button></a></span>
+            <div th:each="item : ${goods}" style="height: 200px ;width: 400px;display: inline-block">
+                <div style="height: 200px;width: 200px;display: inline-block"><img style="height: 200px;width: 200px" th:src="${item.image}"></div>
+                <div style="height: 200px;width: 200px;display: inline-block">
+                <span>原价:<p th:text="${item.originalPrice}"></p> </span>
+                <span>现价:<p th:text="${item.currentPrice}"></p></span>
+                <span>库存:<p th:text="${item.stockCount}"></p></span>
+                <span> <a th:href="'/seckill/' + ${item.goodsId} + '/detail'" target="_blank"><button>去购买</button></a>
+                <button class="btn-danger" th:id="${item.goodsId}">取消收藏</button></span>
                 </div>
             </div>
         </div>
@@ -59,9 +60,34 @@
 </div>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script type="text/javascript" th:src="@{../../js/bootstrap.min.js}"></script>
-<script>
+<script type="text/javascript" th:inline="javascript">
     $(function () {
+          $(".btn-danger").click(function () {
+             var goods_id=$(this).attr("id");
+             var row = $(this).parent().parent().parent()
+              $.ajax({
+                  url:"/seckill/"+goods_id+"/deleteCollect",
+                  type:"POST",
+                  dataType:"text",
+                  data:{},
+                  success:function (res) {
+                      if(res == "success")
+                      {
+                          row.remove()
+                          alert("更新成功")
+                      }
+                      else
+                      {
+                          alert("更新失败")
+                      }
 
+                  },
+                  error:function (err) {
+                      console.log(err)
+                      alert("更新失败")
+                  }
+              });
+          });
     });
 </script>
 </body>

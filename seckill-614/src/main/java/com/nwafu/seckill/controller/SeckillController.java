@@ -72,29 +72,34 @@ public class SeckillController {
     public String detail(@PathVariable("goodsId") int goodsId, Model model, HttpServletRequest request) {
         Goods goods = seckillService.findById(goodsId);
         User user = (User) request.getSession().getAttribute("session_user");
-        int flag = collectService.findExist(goodsId, user.getUserId());
+        if (goods == null) {
+            return "page/goods";  //没找到，返回首页 ，一般不会出现
+        }
         model.addAttribute("goods", goods);
+        if (user == null) {
+            return "page/goods_detail";
+        }
+        int flag = collectService.findExist(goodsId, user.getUserId());
         if (flag != 0)
             model.addAttribute("collectFlag", true);
         else
             model.addAttribute("collectFlag", false);
-        if (goods == null) {
-            return "page/goods";  //没找到，返回首页 ，一般不会出现
-        }
         return "page/goods_detail";  //找到了进入详情页
     }
+
     @ResponseBody
     @PostMapping("/{goodsId}/insertCollect")
-    public String insertCollect(@PathVariable("goodsId") int goodsId,HttpServletRequest request){
+    public String insertCollect(@PathVariable("goodsId") int goodsId, HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("session_user");
-        collectService.insertCollect(goodsId,user.getUserId());
+        collectService.insertCollect(goodsId, user.getUserId());
         return "success";
     }
+
     @ResponseBody
-    @PostMapping("/{goodsId}/insertCollect")
-    public String deleteCollect(@PathVariable("goodsId") int goodsId,HttpServletRequest request){
+    @PostMapping("/{goodsId}/deleteCollect")
+    public String deleteCollect(@PathVariable("goodsId") int goodsId, HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("session_user");
-        collectService.deleteCollect(goodsId,user.getUserId());
+        collectService.deleteCollect(goodsId, user.getUserId());
         return "success";
     }
 
