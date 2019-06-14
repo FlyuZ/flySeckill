@@ -10,6 +10,7 @@ import com.nwafu.seckill.enums.SeckillStatEnum;
 import com.nwafu.seckill.exception.RepeatKillException;
 import com.nwafu.seckill.exception.SeckillCloseException;
 import com.nwafu.seckill.exception.SeckillException;
+import com.nwafu.seckill.service.CollectService;
 import com.nwafu.seckill.service.SeckillService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,9 @@ public class SeckillController {
 
     @Autowired
     private SeckillService seckillService;
+
+    @Autowired
+    private CollectService collectService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -63,14 +67,35 @@ public class SeckillController {
     }
 
     //进入详情页
+    //判断该商品是否被收藏
     @RequestMapping("/{goodsId}/detail")
-    public String detail(@PathVariable("goodsId") int goodsId, Model model) {
+    public String detail(@PathVariable("goodsId") int goodsId, Model model, HttpServletRequest request) {
         Goods goods = seckillService.findById(goodsId);
+        User user = (User) request.getSession().getAttribute("session_user");
+        int flag = collectService.findExist(goodsId, user.getUserId());
         model.addAttribute("goods", goods);
-        if ( goods == null) {
+        if (flag != 0)
+            model.addAttribute("collectFlag", true);
+        else
+            model.addAttribute("collectFlag", false);
+        if (goods == null) {
             return "page/goods";  //没找到，返回首页 ，一般不会出现
         }
         return "page/goods_detail";  //找到了进入详情页
+    }
+    @ResponseBody
+    @PostMapping("/{goodsId}/insertCollect")
+    public String insertCollect(@PathVariable("goodsId") int goodsId,HttpServletRequest request){
+        User user = (User) request.getSession().getAttribute("session_user");
+        collectService.insertCollect(goodsId,user.getUserId());
+        return "success";
+    }
+    @ResponseBody
+    @PostMapping("/{goodsId}/insertCollect")
+    public String deleteCollect(@PathVariable("goodsId") int goodsId,HttpServletRequest request){
+        User user = (User) request.getSession().getAttribute("session_user");
+        collectService.deleteCollect(goodsId,user.getUserId());
+        return "success";
     }
 
     //获取防刷接口
@@ -104,12 +129,11 @@ public class SeckillController {
         Goods goods = (Goods) seckillService.findById(goodsId);
         double price = goods.getCurrentPrice();
         try {
-            if(seckillService.executeSeckill(goodsId, user.getUserId(), md5)){
+            if (seckillService.executeSeckill(goodsId, user.getUserId(), md5)) {
                 SeckillExecution execution = seckillService.insertOrder(user.getUserId(), goodsId,
                         "未支付", user.getAddress(), price);
                 return new SeckillResult<SeckillExecution>(true, execution);
-            }
-            else{
+            } else {
                 return new SeckillResult<SeckillExecution>(false, "未知错误");
             }
         } catch (RepeatKillException e) {

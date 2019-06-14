@@ -41,7 +41,8 @@ public class UserService {
     public List<SeckillOrder> findUserOrder(int userId) {
         return seckillOrderMapper.findByUserId(userId);
     }
-    //收藏
+
+    //查看所有收藏
     public List<Collect> findUserCollect(int userId){
         return collectMapper.findByUserId(userId);
     }
