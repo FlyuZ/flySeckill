@@ -14,6 +14,6 @@ public class SeckillOrderMapperTest {
     private SeckillOrderMapper seckillOrderMapper;
     @Test
     public void findByUserId() {
-        System.out.println(seckillOrderMapper.test(2));
+        System.out.println(seckillOrderMapper.findByUserId(2));
     }
 }

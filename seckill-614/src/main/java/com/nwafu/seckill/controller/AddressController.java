@@ -22,9 +22,11 @@ public class AddressController
     @GetMapping("/user_center")
     public String getAll(Model model, HttpServletRequest request){
         User user = (User) request.getSession().getAttribute("session_user");
-        List<AddressTemp> addresses = addressService.findByUserId(user.getUserId());
-        model.addAttribute("addressList",addresses);
-        return "/page/userinfor_";
+        if(user != null) {
+            List<AddressTemp> addresses = addressService.findByUserId(user.getUserId());
+            model.addAttribute("addressList", addresses);
+        }
+            return "/page/userinfor_";
     }
 
     //添加新的地址

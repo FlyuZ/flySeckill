@@ -31,7 +31,7 @@ public class IconUploadService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "../" + fileName;
+        return "../../" + fileName;
     }
 
     public  void addUserIcon(String fileName, int userId){

@@ -21,6 +21,28 @@
     </style>
 </head>
 <style type="text/css">
+    .surfaceThree {
+        position: relative;
+        height: 30px;
+        width: 120px;
+        background: #d80505;
+        border-radius: 6px;
+        text-align: center;
+        line-height: 30px;
+        font-size: 20px;
+        color: #fff;
+    }
+
+    .surfaceThree input {
+        position: absolute;
+        top: 5px;
+        right: -110px;
+        /* color: #fff; */
+        height: 30px;
+        /* 重点代码让input隐藏 */
+        opacity: 0;
+    }
+
     table, th , td  {
         border: 1px solid grey;
         border-collapse: collapse;
@@ -39,11 +61,20 @@
     <div th:replace="public/guide :: information_guide"></div>
     <div id="center" style="position: absolute;margin-left: 150px;width: 700px;">
         <div id="information_table">
-            <form method="post" action="/seckill/upload" enctype="multipart/form-data" style="height: 180px;width: 180px;display: inline-block; margin-left: 30px; margin-top: 30px">
-                <img style="height: 100px;width: 100px;" th:src="@{${session.session_user.icon}}"/>
-                <p>请选择头像:<input type = "file" name="fileName"/></p>
-                <button type="submit">提交</button>
-            </form>
+            <div style="height: 150px;width: 150px;display: inline-block; margin-left: 30px; margin-top: 30px;text-align: center">
+                <form id="icon"  method="post" action="/seckill/upload" enctype="multipart/form-data" target="frameName">
+                <img  style="height: auto;width: auto;" th:src="@{${session.session_user.icon}}"/>
+                    <button type="button" id="select_icon" class="btn btn-info" style="margin-top: 10px">修改头像</button>
+                    <div class="surfaceThree" id="select_file" style="display: none;margin-top: 10px;margin-left: 15px">选择文件
+                        <input type = "file" name="fileName" accept="image/png,image/jpeg" id="icon_input" />
+                    </div>
+
+                    <button id="sbt_icon" class="btn btn-success" type="submit" onClick="sub();" style="display: none;margin-top: 10px">提交</button>
+                    <button id="sbt_back" class="btn btn-warning" type="button" style="display: none;margin-top: 10px;">取消</button>
+
+                </form>
+                <iframe id="iconResult" src=""  style="display: none"  name="frameName"></iframe>
+            </div>
             <div style="float: left;display: inline-block;margin-left: 60px;text-align: center;margin-top: 100px;position: absolute">
                 <div class="input-group">
                     <span class="input-group-addon">昵称：</span>
@@ -112,11 +143,78 @@
 </div>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script type="text/javascript" th:src="@{../../js/bootstrap.min.js}"></script>
+<srcipt type="text/javascript" src="http://malsup.github.io/jquery.form.js"></srcipt>
 <script type="text/javascript" th:inline="javascript">
+    var handlerFlag = 0;
+
+    function setOnloadCallBask(obj, event, handler) {
+        //for most explores
+        if (null != obj && null != obj.addEventListener) {
+            obj.addEventListener(event, handler, false);
+        }
+        //for IE
+        else if (null != obj && null != obj.attachEvent) {
+            obj.attachEvent('on'+event, handler);
+        }
+        //not support
+        else {
+            //选择dom元素错误
+            throw new Error('不支持该dom元素');
+        }
+    }
+
+    function ActionHandler()  {
+
+        if(0 != handlerFlag)  {
+            window.location.reload();
+            }
+            handlerFlag = 0;
+
+    }
+
+    function sub()  {
+        handlerFlag = 1;
+    }
+
+
     $(function () {
+
+        var user=[[${session.session_user}]];
+        if( user == null)
+        {
+            window.close();
+        }
+
+        setOnloadCallBask(document.getElementById("iconResult"),'load',ActionHandler);
+
+        $("#icon_input").change(function () {
+            var filename=$(this).val();
+            if(!/\.(gif|jpg|jpeg|png|GIF|JPG|JPEG|PNG)$/.test(filename))
+            {
+                $(this).val("");
+                alert("图片类型必须是jpg,png中的一种");
+            }
+        });
+
+
+        $("#select_icon").click(function () {
+           $(this).hide();
+           $("#select_file").show();
+           $("#sbt_icon").show();
+           $("#sbt_back").show();
+        });
+
+        $("#sbt_back").click(function () {
+            $("#select_file").hide();
+            $("#sbt_icon").hide();
+            $("#sbt_back").hide();
+            $("#select_icon").show();
+            $("#icon_input").val("");
+        });
+
         function isValidEmail(str) {
             return /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/.test(str);
-        }
+        };
 
         function isvalidtelephone(str){ return /^\d{11}$/.test(str); }
 
@@ -133,13 +231,10 @@
         $("#information_back").click(function () {
             var nickname=$("#nickname")
             var email=$("#email")
-            var icon=$("#information_table span input")
             nickname.val([[${session.session_user.nickname}]])
             email.val([[${session.session_user.mailbox}]])
-
             nickname.attr("disabled","disabled");
             email.attr("disabled","disabled");
-            icon.attr("disabled","disabled");
             $("#information_save").hide();
             $("#information_back").hide();
             $("#information_alter").show();
@@ -147,8 +242,6 @@
         });   //点击用户数据取消按钮
 
         $("#information_save").click(function () {
-            var icon=$("#information_table span input")
-
             var nickname=$("#nickname")
             var email=$("#email")
 
@@ -171,7 +264,6 @@
                     {
                         nickname.attr("disabled","disabled");
                         email.attr("disabled","disabled");
-                        icon.attr("disabled","disabled");
                         $("#information_save").hide();
                         $("#information_back").hide();
                         $("#information_alter").show();
@@ -181,7 +273,6 @@
                     {
                         nickname.attr("disabled","disabled");
                         email.attr("disabled","disabled");
-                        icon.attr("disabled","disabled");
                         $("#information_save").hide();
                         $("#information_back").hide();
                         $("#information_alter").show();

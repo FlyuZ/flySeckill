@@ -53,8 +53,8 @@ a {
 }
 
 .round_icon{
-    width: 20px;
-    height: 20px;
+    width: 33px;
+    height: 33px;
     display: flex;
     border-radius: 50%;
     align-items: center;

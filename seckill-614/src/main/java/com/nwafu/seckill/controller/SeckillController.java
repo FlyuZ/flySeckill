@@ -41,6 +41,7 @@ public class SeckillController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+
     @RequestMapping("/list")
     public String findSeckillList(Model model) {
         List<Goods> list = seckillService.findAllGoods();

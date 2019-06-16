@@ -33,25 +33,31 @@ public class UserController{
     @GetMapping("comment")
     public String findUserComment(Model model,HttpServletRequest request){
         User user = (User) request.getSession().getAttribute("session_user");
-        List<CommentTemp> comments = userService.findUserComment(user.getUserId());
-        model.addAttribute("comments", comments);
-        return "page/userinfor_comment";
+        if(user != null) {
+            List<CommentTemp> comments = userService.findUserComment(user.getUserId());
+            model.addAttribute("comments", comments);
+        }
+            return "page/userinfor_comment";
     }
 
     @GetMapping("collect")
     public String findUserCollect(Model model,HttpServletRequest request){
         User user = (User) request.getSession().getAttribute("session_user");
-        List<Goods> goods = userService.findUserCollect(user.getUserId());
-        model.addAttribute("goods", goods);
+        if(user != null) {
+            List<Goods> goods = userService.findUserCollect(user.getUserId());
+            model.addAttribute("goods", goods);
+        }
         return "page/userinfor_collection";
     }
 
     @GetMapping("order")
     public String findUserOrder(Model model,HttpServletRequest request){
         User user = (User) request.getSession().getAttribute("session_user");
-        List<SeckillOrder> seckillOrders = userService.findUserOrder(user.getUserId());
-        System.out.println(seckillOrders);
-        model.addAttribute("seckillOrders", seckillOrders);
+        if (user != null) {
+            List<SeckillOrder> seckillOrders = userService.findUserOrder(user.getUserId());
+            System.out.println(seckillOrders);
+            model.addAttribute("seckillOrders", seckillOrders);
+        }
         return "page/userinfor_order";
     }
 

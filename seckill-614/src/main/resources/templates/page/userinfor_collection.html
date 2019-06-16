@@ -62,6 +62,12 @@
 <script type="text/javascript" th:src="@{../../js/bootstrap.min.js}"></script>
 <script type="text/javascript" th:inline="javascript">
     $(function () {
+        var user=[[${session.session_user}]];
+        if( user == null)
+        {
+            window.close();
+        }
+
           $(".btn-danger").click(function () {
              var goods_id=$(this).attr("id");
              var row = $(this).parent().parent().parent()
