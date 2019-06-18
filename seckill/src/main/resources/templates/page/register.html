@@ -7,35 +7,29 @@
     <link th:href="@{../../css/bootstrap.min.css}" rel="stylesheet">
     <link th:href="@{../../css/register.css}" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" th:href="@{../../css/public.css}"/>
 </head>
-<body class="bgf4">
-<div class="login-box f-mt10 f-pb50">
-    <div class="main bgf">
-        <div class="reg-box-pan display-inline">
+<body class="bgf4"  th:style="'background:url(' + @{../../img/back.jpg} + ');'">
+<div class="login-box f-mt10 f-pb50" style="height: 1000px">
+    <div class="main bgf" style="height: 1000px">
+        <div class="reg-box-pan display-inline" style="height: 1000px;">
             <div class="title">
                 <p class="lbg-txt">填写注册信息</p>
             </div>
             <div class="reg-box" id="verifyCheck">
-                <div class="part ">
+                <div class="part" style="margin-left: 40px">
                     <div class="item col-xs-12">
-                        <span class="intelligent-label f-fl"><b class="ftx04">*</b>注册手机号</span>
+                        <span class="intelligent-label f-fl"><b class="ftx04" >*</b>手机号：</span>
                         <div class="f-fl item-ifo">
                             <input id="phoneNumber" type="text" maxlength="11" class="txt03 f-r3 required"/>
                             <label class="focus" id="label1"><span>11位手机号</span></label>
                         </div>
                     </div>
                     <div class="item col-xs-12">
-                        <span class="intelligent-label f-fl"><b class="ftx04">*</b>昵称</span>
+                        <span class="intelligent-label f-fl"><b class="ftx04">*</b>昵称：</span>
                         <div class="f-fl item-ifo">
                             <input id="nickName" type="text" maxlength="8" class="txt03 f-r3 required"/>
                             <label class="focus" id="label2"><span>1-8位</span></label>
-                        </div>
-                    </div>
-                    <div class="item col-xs-12">
-                        <span class="intelligent-label f-fl"><b class="ftx04">*</b>邮箱</span>
-                        <div class="f-fl item-ifo">
-                            <input id="Email" type="text" maxlength="30" class="txt03 f-r3 required"/>
-                            <label class="focus" id="label5" style="display:none;color:#f00;">邮箱格式错误</label>
                         </div>
                     </div>
                     <div class="item col-xs-12">
@@ -76,17 +70,14 @@
             return /^\d{11}$/.test(str);
         }
 
-        function isValidEmail(str) {
-            return /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/.test(str);
-        }
 
         function initial() {
             $("#label1").css('color', '#999')
             $("#phoneNumber").css('border-color', '')
             $("#label2").css('color', '#999')
             $("#nickName").css('border-color', '')
-            $("#Email").css('border-color', '')
-            $("#label5").hide()
+            // $("#Email").css('border-color', '')
+            // $("#label5").hide()
             $("#label3").css('color', '#999')
             $("#pwd").css('border-color', '')
             $("#label4").css('color', '#999')
@@ -98,7 +89,7 @@
             initial()
             var phonenumber = $("#phoneNumber").val()
             var nickname = $("#nickName").val()
-            var email = $("#Email").val()
+           // var email = $("#Email").val()
             var pwd = $("#pwd").val()
             var surepwd = $("#surepwd").val()
 
@@ -110,11 +101,6 @@
             if (nickname == "") {
                 $("#label2").css('color', '#f00')
                 $("#nickName").css('border-color', '#f00')
-                return
-            }
-            if (!isValidEmail(email)) {
-                $("#Email").css('border-color', '#f00')
-                $("#label5").show()
                 return
             }
 
@@ -129,27 +115,28 @@
                 $("#label4").text("与密码不一致")
                 return
             }
-
-console.log(phonenumber)
-            console.log(email)
-            console.log(pwd)
-            console.log(nickname)
-
             $.ajax({
                 url: '/seckill/register',
                 type: 'POST',
                 data: {
                     "username": phonenumber,
                     "password": pwd,
-                    "mail": email,
                     "nickname": nickname
                 },
-                async: false,
                 dataType: 'text',
                 success: function (res) {
-                    console.log(res);
+                    if( res == "success")
+                    {
+                        if(confirm("注册成功,前往登录"))
+                            window.location.href="loginpage";
+                        else
+                            window.location.href="list";
+                    }
+                    else
+                        alert("注册失败,请稍后再试！！！");
                 },
                 error: function (err) {
+                    alert("注册失败,请稍后再试！！！");
                     console.log(err);
                 }
             });

@@ -3,52 +3,69 @@ package com.nwafu.seckill.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 
-/**
- * 秒杀订单表（秒杀订单表和其他订单表不同，属于独立的模块）
- * @auther
- * @date 2019/6
- */
-public class SeckillOrder implements Serializable {
+public class SeckillOrder {
+    private Integer orderId;
 
-    private long seckillId; //秒杀到的商品ID
-    private BigDecimal money; //支付金额
-    private long userPhone; //秒杀用户的手机号
+    private Integer userId;
+
+    private Integer goodsId;
+
+    private String orderNo;
+
+    private String state;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    //@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date createTime; //创建时间
+    private Date createTime;
 
-    private boolean status; //订单状态， -1:无效 0:成功 1:已付款
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date payTime;
 
-    private Seckill seckill; //秒杀商品，和订单是一对多的关系
+    private String address;
 
-    public long getSeckillId() {
-        return seckillId;
+    private Double price;
+
+    public Integer getOrderId() {
+        return orderId;
     }
 
-    public void setSeckillId(long seckillId) {
-        this.seckillId = seckillId;
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
     }
 
-    public BigDecimal getMoney() {
-        return money;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setMoney(BigDecimal money) {
-        this.money = money;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public long getUserPhone() {
-        return userPhone;
+    public Integer getGoodsId() {
+        return goodsId;
     }
 
-    public void setUserPhone(long userPhone) {
-        this.userPhone = userPhone;
+    public void setGoodsId(Integer goodsId) {
+        this.goodsId = goodsId;
+    }
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo == null ? null : orderNo.trim();
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state == null ? null : state.trim();
     }
 
     public Date getCreateTime() {
@@ -59,30 +76,53 @@ public class SeckillOrder implements Serializable {
         this.createTime = createTime;
     }
 
-    public boolean isStatus() {
-        return status;
+    public Date getPayTime() {
+        return payTime;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setPayTime(Date payTime) {
+        this.payTime = payTime;
     }
 
-    public Seckill getSeckill() {
-        return seckill;
+    public String getAddress() {
+        return address;
     }
 
-    public void setSeckill(Seckill seckill) {
-        this.seckill = seckill;
+    public void setAddress(String address) {
+        this.address = address == null ? null : address.trim();
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public SeckillOrder(Integer userId, Integer goodsId, String orderNo, String state, Date createTime, Date payTime, String address, Double price) {
+        this.userId = userId;
+        this.goodsId = goodsId;
+        this.orderNo = orderNo;
+        this.state = state;
+        this.createTime = createTime;
+        this.payTime = payTime;
+        this.address = address;
+        this.price = price;
     }
 
     @Override
     public String toString() {
         return "SeckillOrder{" +
-                "seckillId=" + seckillId +
-                ", money=" + money +
+                "orderId=" + orderId +
+                ", userId=" + userId +
+                ", goodsId=" + goodsId +
+                ", orderNo='" + orderNo + '\'' +
+                ", state='" + state + '\'' +
                 ", createTime=" + createTime +
-                ", status=" + status +
-                ", seckill=" + seckill +
+                ", payTime=" + payTime +
+                ", address='" + address + '\'' +
+                ", price=" + price +
                 '}';
     }
 }

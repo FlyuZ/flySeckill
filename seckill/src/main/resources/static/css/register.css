@@ -79,7 +79,7 @@ fieldset[disabled] .btn.active{background-color:#e5e5e5;border-color: #e5e5e5; c
 .txt-sm{width:80px}.txt-nm{width:150px;}.txt-lg{width:200px;}
 /*step*/
 .title{ margin:0 auto; display:block; height:60px;}
-.title .lbg-txt{ position: relative; color:#1a97d7; font-size:25px;margin-left: 300px;margin-top: 80px}
+.title .lbg-txt{ position: relative; color:#1a97d7; font-size:25px;margin-left: 360px;margin-top: 60px}
 
 input[readonly],input[disabled]{ background:#f6f6f6;}
 

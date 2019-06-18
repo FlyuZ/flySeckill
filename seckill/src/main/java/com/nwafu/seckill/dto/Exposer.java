@@ -14,7 +14,7 @@ public class Exposer {
     private String md5;
 
     //ID
-    private long seckillId;
+    private int goodsId;
 
     //系统当前时间（毫秒）
     private long now;
@@ -25,23 +25,23 @@ public class Exposer {
     //秒杀结束时间
     private long end;
 
-    public Exposer(boolean exposed, String md5, long seckillId) {
+    public Exposer(boolean exposed, String md5, int goodsId) {
         this.exposed = exposed;
         this.md5 = md5;
-        this.seckillId = seckillId;
+        this.goodsId = goodsId;
     }
 
-    public Exposer(boolean exposed, Long seckillId, long now, long start, long end) {
+    public Exposer(boolean exposed, int goodsId, long now, long start, long end) {
         this.exposed = exposed;
-        this.seckillId = seckillId;
+        this.goodsId = goodsId;
         this.now = now;
         this.start = start;
         this.end = end;
     }
 
-    public Exposer(boolean exposed, long seckillId) {
+    public Exposer(boolean exposed, int goodsId) {
         this.exposed = exposed;
-        this.seckillId = seckillId;
+        this.goodsId = goodsId;
     }
 
     public boolean isExposed() {
@@ -60,12 +60,12 @@ public class Exposer {
         this.md5 = md5;
     }
 
-    public long getSeckillId() {
-        return seckillId;
+    public int getGoodsId() {
+        return goodsId;
     }
 
-    public void setSeckillId(long seckillId) {
-        this.seckillId = seckillId;
+    public void setGoodsId(int goodsId) {
+        this.goodsId = goodsId;
     }
 
     public long getNow() {
@@ -97,7 +97,7 @@ public class Exposer {
         return "Exposer{" +
                 "exposed=" + exposed +
                 ", md5='" + md5 + '\'' +
-                ", seckillId=" + seckillId +
+                ", goodsId=" + goodsId +
                 ", now=" + now +
                 ", start=" + start +
                 ", end=" + end +

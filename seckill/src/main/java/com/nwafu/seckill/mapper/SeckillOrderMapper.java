@@ -1,16 +1,13 @@
 package com.nwafu.seckill.mapper;
 
-import com.nwafu.seckill.entity.*;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
+
+import com.nwafu.seckill.entity.SeckillOrder;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
-/**
- * @auther
- * @date 2019/6
- */
 @Mapper
 @Component
 public interface SeckillOrderMapper {
@@ -18,19 +15,28 @@ public interface SeckillOrderMapper {
     /**
      * 插入购买订单明细
      *
-     * @param seckillId 秒杀到的商品ID
-     * @param money     秒杀的金额
-     * @param userPhone 秒杀的用户
      * @return 返回该SQL更新的记录数，如果>=1则更新成功
      */
-    int insertOrder(@Param("seckillId") long seckillId, @Param("money") BigDecimal money, @Param("userPhone") long userPhone);
+    @Insert("INSERT ignore INTO seckill_order(user_id, goods_id, order_no, state, create_time, pay_time, address, price) " +
+            "VALUES (#{userId}, #{goodsId}, #{orderNo}, #{state}, #{createTime}, #{payTime}, #{address}, #{price})")
+    int insertOrder(@Param("userId") int userId, @Param("goodsId") int goodsId,
+                    @Param("orderNo") String orderNo, @Param("state") String state,
+                    @Param("createTime") Date createTime, @Param("payTime") Date payTime,
+                    @Param("address") String address, @Param("price") Double price);
 
     /**
-     * 根据秒杀商品ID查询订单明细数据并得到对应秒杀商品的数据，因为我们再SeckillOrder中已经定义了一个Seckill的属性
-     *
-     * @param seckillId
-     * @param userPhone
-     * @return
+     * 根据秒杀用户ID查询该用户的所有订单明细数据
      */
-    SeckillOrder findById(@Param("seckillId") long seckillId, @Param("userPhone") long userPhone);
+    @Select("SELECT user_id, goods_id, order_no, state, create_time, pay_time, address, price FROM seckill_order where user_id = #{userId}")
+    List<SeckillOrder> findByUserId(@Param("userId") int userId);
+
+
+    @Select("select count(*) from seckill_order where user_id = #{userId} AND goods_id = #{goodsId}")
+    int findExist(@Param("userId") int userId, @Param("goodsId") int goodsId);
+
+    /**
+     * 更改支付状态
+     */
+    @Update("UPDATE seckill_order SET state = #{state} WHERE order_no = #{orderNo}")
+    int updateState(@Param("state") String state, @Param("orderNo") String orderNo);
 }
