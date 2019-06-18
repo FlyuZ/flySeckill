@@ -2,12 +2,16 @@ package com.nwafu.seckill.service;
 
 import com.nwafu.seckill.dto.Exposer;
 import com.nwafu.seckill.dto.SeckillExecution;
+import com.nwafu.seckill.entity.Category;
+import com.nwafu.seckill.entity.Comment;
 import com.nwafu.seckill.entity.Goods;
 import com.nwafu.seckill.entity.SeckillOrder;
 import com.nwafu.seckill.enums.SeckillStatEnum;
 import com.nwafu.seckill.exception.RepeatKillException;
 import com.nwafu.seckill.exception.SeckillCloseException;
 import com.nwafu.seckill.exception.SeckillException;
+import com.nwafu.seckill.mapper.CategoryMapper;
+import com.nwafu.seckill.mapper.CommentMapper;
 import com.nwafu.seckill.mapper.GoodsMapper;
 import com.nwafu.seckill.mapper.SeckillOrderMapper;
 import org.slf4j.Logger;
@@ -33,7 +37,7 @@ public class SeckillService {
     //设置盐值字符串，随便定义，用于混淆MD5值
     private final String salt = "byfeifei";
     //设置秒杀redis缓存的key
-    private final String key = "seckill";
+    private final String key = "";
 
     @Autowired
     private GoodsMapper goodsMapper;
@@ -42,9 +46,15 @@ public class SeckillService {
     private SeckillOrderMapper seckillOrderMapper;
 
     @Autowired
+    private CategoryMapper categoryMapper;
+
+    @Autowired
+    private CommentMapper commentMapper;
+
+    @Autowired
     private RedisTemplate redisTemplate;
 
-    public List<Goods> findAll() {
+    public List<Goods> findAllGoods() {
         List<Goods> goodsList = redisTemplate.boundHashOps("goods").values();
         if (goodsList == null || goodsList.size() == 0) {
             //说明缓存中没有秒杀列表数据
@@ -52,7 +62,7 @@ public class SeckillService {
             goodsList = goodsMapper.findAll();
             for (Goods goods : goodsList) {
                 //将秒杀列表数据依次放入redis缓存中，key:秒杀表的ID值；value:秒杀商品数据
-                redisTemplate.boundHashOps(key).put(goods.getGoodsId(), goods);
+                redisTemplate.boundHashOps("goods").put(goods.getGoodsId(), goods);
                 logger.info("商品findAll -> 从数据库中读取放入缓存中");
             }
         } else {
@@ -61,10 +71,39 @@ public class SeckillService {
         return goodsList;
     }
 
-    public Goods findById(int GoodsId) {
-        return goodsMapper.findById(GoodsId);
+    public List<Goods> findByCategory(int categoryId) {
+        List<Goods> goodsList = goodsMapper.findByCategory(categoryId);
+        return goodsList;
     }
 
+    public List<Category> findAllCategory() {
+        List<Category> categoryList = redisTemplate.boundHashOps("category").values();
+        if (categoryList == null || categoryList.size() == 0) {
+            //说明缓存中没有秒杀列表数据
+            //查询数据库中秒杀列表数据，并将列表数据循环放入redis缓存中
+            categoryList = categoryMapper.findAll();
+            for (Category category : categoryList) {
+                //将秒杀列表数据依次放入redis缓存中，key:秒杀表的ID值；value:秒杀商品数据
+                redisTemplate.boundHashOps("category").put(category.getCategoryId(), category);
+                logger.info("分类 -> 从数据库中读取放入缓存中");
+            }
+        } else {
+            logger.info("分类 -> 从缓存中读取");
+        }
+        return categoryList;
+    }
+
+    //根据商品ID查找商品
+    public Goods findById(int goodsId) {
+        return goodsMapper.findById(goodsId);
+    }
+
+    //返回该商品评论
+    public List<Comment> findGoodsComment(int goodsId){
+        return commentMapper.findByGoodsId(goodsId);
+    }
+
+    //返回秒杀接口
     public Exposer exportSeckillUrl(int goodsId) {
         Goods goods = (Goods) redisTemplate.boundHashOps(key).get(goodsId);
         if (goods == null) {
@@ -119,19 +158,21 @@ public class SeckillService {
         //执行秒杀逻辑：1.减库存；2.储存秒杀订单
         Date nowTime = new Date();
         try {
-            SeckillOrder seckillOrder = seckillOrderMapper.findExist(goodsId, userId);
-            if(seckillOrder != null){
+            int seckillOrder = seckillOrderMapper.findExist(userId, goodsId);
+
+            if (seckillOrder !=  0) {
                 throw new RepeatKillException("seckill repeated");
-            }else{
+            } else {
                 //减缓存库存，减数据库库存
-                int updateCount =  goodsMapper.reduceStock(goodsId, nowTime);
-                if(updateCount <= 0){
+                System.out.println("执行减库存和缓存操作");
+                int updateCount = goodsMapper.reduceStock(goodsId, nowTime);
+                if (updateCount <= 0) {
                     //没有更新记录，秒杀结束
                     throw new SeckillCloseException("seckill is closed");
-                }else{
-                    Goods goods = (Goods) redisTemplate.boundHashOps(key).get(goodsId);
+                } else {
+                    Goods goods = (Goods) redisTemplate.boundHashOps("goods").get(goodsId);
                     goods.setStockCount(goods.getStockCount() - 1);
-                    redisTemplate.boundHashOps(key).put(goodsId, goods);
+                    redisTemplate.boundHashOps("goods").put(goodsId, goods);
                     return true;
                 }
             }
@@ -145,17 +186,18 @@ public class SeckillService {
     }
 
     @Transactional
-    public SeckillExecution insertOrder(int userId, int goodsId, String state, String address, double price){
+    public SeckillExecution insertOrder(int userId, int goodsId, String state, String address, double price) {
         Date nowTime = new Date();
-        String orderNo = nowTime.toString() + userId;
+        String orderNo = "1010"+ nowTime.toString() + userId; //自动生成订单编码
+        if (address == null) {
+            address = "";
+        }
         int res = seckillOrderMapper.insertOrder(userId, goodsId, orderNo, state, nowTime, null, address, price);
-        if(res > 0){
-            if(address == null)
-                address = "";
+        if (res > 0) {
             SeckillOrder seckillOrder = new SeckillOrder(userId, goodsId, orderNo, state, nowTime, null, address, price);
             return new SeckillExecution(goodsId, SeckillStatEnum.SUCCESS, seckillOrder);
-        }else{
-            return new SeckillExecution(goodsId, SeckillStatEnum.INNER_ERROR, null );
+        } else {
+            return new SeckillExecution(goodsId, SeckillStatEnum.INNER_ERROR, null);
         }
     }
 }

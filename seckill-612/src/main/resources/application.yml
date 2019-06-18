@@ -86,6 +86,13 @@ logging:
   level:
     cn.tycoding.mapper: DEBUG
 
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+
 
 
 
