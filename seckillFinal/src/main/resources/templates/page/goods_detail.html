@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>秒杀商品列表页</title>
+    <link rel="stylesheet" th:href="@{../../css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{../../css/seckill.css}"/>
+    <link rel="stylesheet" th:href="@{../../css/seckill_item.css}"/>
+    <link rel="stylesheet" th:href="@{../../css/public.css}"/>
+    <!-- FontAwesome Styles-->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <!--<link href="assets/css/font-awesome.css" rel="stylesheet" />-->
+    <link href="//cdn.bootcss.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Morris Chart Styles-->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
+    <!-- TABLE STYLES-->
+    <style>
+        label {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body style="height: 1400px">
+
+<div th:if="${session.session_user} != null">
+    <div th:replace="public/header :: goods_header"></div>
+    <!--/. NAV TOP  -->
+
+    <div th:replace="public/guide :: goods_guide"></div>
+
+    <div style="z-index:1001; height: 35px;width: 35px; margin-top: 20px;margin-left: 590px;">
+        <img id="uncollect"  th:src="@{../../img/tri_collect.png}" style="height: auto;width: auto" title="取消收藏"/>
+    </div>
+
+    <div style="z-index:1001; height: 35px;width: 35px; margin-top: 20px;margin-left: 590px; ">
+        <img id="collect" th:src="@{../../img/tri.png}" style="height: auto;width: auto;" title="点击收藏"/>
+    </div>
+
+
+        <div style="margin-left: 160px;float:left;z-index: 999">
+            <div class="fl preview-wrap" style="display: inline-list-item;float:left;position: absolute;width: 300px">
+                <div id="preview" class="spec-preview">
+                    <span class="jqzoom"><img th:src="${goods.image}" alt=""/></span>
+                </div>
+            </div>
+
+            <div class="fr itemInfo-wrap" style="z-index: 999;height: 300px;width:400px; display: inline-list-item;float:left ;position: absolute ;margin-left: 400px">
+                <div class="sku-name">
+                    <h4 th:text="${goods.goodsName}"></h4>
+                </div>
+                <div class="news">
+                    <span><img th:src="@{../../lib/font/icon/clock.png}"/>精品秒杀</span>
+                </div>
+                <div class="summary">
+                    <div class="summary-wrap">
+
+                        <div class="fl title">
+                            <i>秒杀价</i>
+                        </div>
+                        <div class="fl price">
+                            <i>￥</i>
+                            <b th:text="${goods.currentPrice}"></b>
+                            <span>原价：<b th:text="${goods.originalPrice}"></b></span>
+                        </div>
+                        <div class="fr remark">
+                            剩余库存：<b th:text="${goods.stockCount}"></b>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div class="text-center">
+                    <div style="color: #ff0000d9;">
+                        <h2>
+                            <span id="seckill-time-span"></span>
+                            <br/>
+                            <br/>
+                            <span id="seckill-box"></span>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    <div style="margin-top: 380px;margin-left: 170px;border: 1px solid rgb(51,122,183);width: 950px">
+        <div th:each="item : ${comments}" style="margin-left: 20px;width: 910px">
+            <br>
+            <div>用户<b th:text="${item.nickname}" style="display: inline-block"></b>评论：<p th:text="${item.commentText}"style="display: inline-block"></p></div>
+            <HR style="FILTER: alpha(opacity=100,finishopacity=0,style=3)" width="80%" color=#987cb9 SIZE=3>
+        </div>
+    </div>
+
+    <!--秒杀成功后弹出-->
+    <div id="killPhoneModal" class="modal fade" style="display: none">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title text-center">
+                        <span class="fa fa-phone fa-fw"> </span>订单详情
+                    </h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-8 col-xs-offset-2">
+                            <span>商品名称：<p th:text="${goods.goodsName}"></p></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <!--验证信息-->
+                    <span id="killPhoneMessage" style="margin-right: 40%;"></span>
+                    <button type="button" id="pay_Btn" class="btn btn-success">
+                        立即支付
+                    </button>
+                    <button type="button" id="cancel_Btn" class="btn btn-danger">
+                        取消
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+</body>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" th:src="@{../../js/jquery.cookie.js}"></script>
+<script type="text/javascript" th:src="@{../../js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{../../js/countdown.js}"></script>
+<script type="text/javascript" th:src="@{../../js/seckill_detail.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+    $(function () {
+        var collect_flag= [[${collectFlag}]];
+        var user=[[${session.session_user}]];
+
+        if( user == null)
+        {
+           if(window.confirm("您还未登录,请登录后访问！！！"))
+           {
+               window.location.href="seckill/loginpage"
+           }
+           else
+           {
+               window.close()
+           }
+        }
+
+        if(collect_flag == false)
+        {
+            $("#collect").parent().show()
+            $("#uncollect").parent().hide()
+        }
+        else
+        {
+            $("#collect").parent().hide()
+            $("#uncollect").parent().show()
+        }
+
+        $("#categorydiv").hide()
+
+        $("#collect").click(function () {
+            $.ajax({
+                url:"/seckill/"+[[${goods.goodsId}]]+"/insertCollect",
+                type:"POST",
+                dataType:"text",
+                data:{},
+                success:function (res) {
+                    if(res == "success")
+                    {
+                        $("#collect").parent().hide()
+
+                        alert("收藏成功！！！")
+
+                        $("#uncollect").parent().show()
+                    }
+                    else
+                    {
+
+                        alert("收藏失败！！！")
+                    }
+                },
+                error:function (err) {
+                    console.log(err)
+                    alert("收藏失败！！！")
+                }
+            });
+        });
+
+        $("#uncollect").click(function () {
+            $.ajax({
+                url:"/seckill/"+[[${goods.goodsId}]]+"/deleteCollect",
+                type:"POST",
+                dataType:"text",
+                data:{},
+                success:function (res) {
+                    if(res == "success")
+                    {
+                        $("#collect").parent().show()
+                        alert("取消收藏成功！！！")
+                        $("#uncollect").parent().hide()
+                    }
+                    else
+                    {
+                       alert("取消收藏失败！！！")
+                    }
+                },
+                error:function (err) {
+                    console.log(err)
+                    alert("取消收藏失败！！！")
+                }
+            });
+        });
+
+
+        $("#category").hover(
+            function () {
+                $("#categorydiv").show()
+
+            },
+            function () {
+                $("#categorydiv").hide()
+
+            }
+        );
+
+        $("#categorydiv").hover(
+            function () {
+                $("#categorydiv").show()
+
+            },
+            function () {
+                $("#categorydiv").hide()
+
+            }
+        );
+        //使用表达式传入参数
+        seckill.detail.init({
+            seckillId: [[${goods.goodsId}]],
+            startTime: [[${goods.startTime.time}]],//毫秒
+            endTime: [[${goods.endTime.time}]],
+            user: [[${session.session_user}]]
+        });
+    });
+</script>
+</html>

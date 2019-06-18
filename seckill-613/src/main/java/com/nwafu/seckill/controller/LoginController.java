@@ -2,7 +2,7 @@ package com.nwafu.seckill.controller;
 
 
 import com.nwafu.seckill.entity.User;
-import com.nwafu.seckill.service.UserService;
+import com.nwafu.seckill.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.DigestUtils;
@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 public class LoginController {
 
     @Autowired
-    private UserService userLoginService;
+    private LoginService userLoginService;
 
     @RequestMapping(value = {"/loginpage"})
     public String LoginPage() {

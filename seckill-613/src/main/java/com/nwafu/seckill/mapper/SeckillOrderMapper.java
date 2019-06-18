@@ -35,4 +35,6 @@ public interface SeckillOrderMapper {
 
     @Select("select count(*) from seckill_order where user_id = #{userId} AND goods_id = #{goodsId}")
     int findExist(@Param("userId") int userId, @Param("goodsId") int goodsId);
+
+
 }
