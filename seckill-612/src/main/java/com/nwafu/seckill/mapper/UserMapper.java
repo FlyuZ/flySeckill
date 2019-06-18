@@ -23,4 +23,7 @@ public interface UserMapper {
      * 修改个人信息
      */
     int update();
+
+    @Select("select * from user where user_id = #{userId}")
+    User findUserById(@Param("userId") int userId);
 }
