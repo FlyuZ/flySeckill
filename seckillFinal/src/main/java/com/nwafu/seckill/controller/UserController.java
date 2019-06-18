@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -55,11 +56,19 @@ public class UserController{
         User user = (User) request.getSession().getAttribute("session_user");
         if (user != null) {
             List<SeckillOrder> seckillOrders = userService.findUserOrder(user.getUserId());
-            System.out.println(seckillOrders);
+            List<Goods> goods = new ArrayList<>();
+            for(SeckillOrder seckillOrder : seckillOrders){
+                goods.add(userService.findGoods(seckillOrder.getGoodsId()));
+            }
             model.addAttribute("seckillOrders", seckillOrders);
+            model.addAttribute("goods",goods);
         }
         return "page/userinfor_order";
     }
-
-
+    @GetMapping("exit")
+    public String exit(HttpServletRequest request){
+        request.getSession().removeAttribute("session_user");
+        request.getSession().removeAttribute("msg");
+        return "redirect:/seckill/list";
+    }
 }

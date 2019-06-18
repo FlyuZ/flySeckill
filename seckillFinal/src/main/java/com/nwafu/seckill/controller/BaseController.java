@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class BaseController {
 
+    @RequestMapping("/test")
+    public String test(){
+        return "page/find_pwd";
+    }
     /**
      * 跳转到秒杀商品页
      *

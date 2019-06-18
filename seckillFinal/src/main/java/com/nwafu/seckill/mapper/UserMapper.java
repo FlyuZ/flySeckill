@@ -12,6 +12,7 @@ import java.util.List;
 @Mapper
 @Component
 public interface UserMapper {
+
     //根据用户名密码用户登录
     @Select("SELECT * FROM user WHERE username = #{username} AND password = #{password}")
     User userlogin(@Param("username") String username, @Param("password") String password);
@@ -25,11 +26,21 @@ public interface UserMapper {
     @Update("UPDATE user set nickname=#{nickname},mailbox=#{mailbox} where username=#{username}")
     void update(@Param("nickname") String nickname, @Param("mailbox") String mailbox,
                 @Param("username") String username);
+
+    /**
+     * 找回密码
+     */
+    @Update("UPDATE user set password=#{password} where username=#{username}")
+    int updatePassword(@Param("username") String username,@Param("password") String password);
+
     /**
      * 根据Id获取个人信息
      */
     @Select("Select * from user where username=#{username}")
     User getByName(String username);
+
+    @Select("Select * from user where user_id=#{userId}")
+    User getById(int userId);
     /**
      * 获取所有
      */

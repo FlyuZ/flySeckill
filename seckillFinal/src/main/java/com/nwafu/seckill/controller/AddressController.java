@@ -50,6 +50,8 @@ public class AddressController
         User user = (User) request.getSession().getAttribute("session_user");
         String addressText = addressService.findByAddressId(Integer.valueOf(address_id));
         addressService.setDefaultAddress(user.getUserId(), addressText);
+        user.setAddress(addressText);
+        request.getSession().setAttribute("session_user", user);
         return "success";
     }
 

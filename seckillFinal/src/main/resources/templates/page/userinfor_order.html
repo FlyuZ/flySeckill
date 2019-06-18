@@ -41,15 +41,30 @@
         <span >
             <h2>我的订单</h2>
         </span>
+
         <div>
-            <div th:each="item : ${seckillOrders}" style="height: 150px">
-                <!--<div><img th:src=""></div>-->
-                <div>
-                    <span>状态<p th:text="${item.state}"></p> </span>
-                    <span>购买时间:<p th:text="${item.createTime}"></p></span>
-                    <!--<span>地址:<p th:text="${item.}"></p></span>-->
-                    <!--<span>电话:<p th:text="${item.}"></p></span>-->
-                    <!--<span>价格:<p th:text="${item.}"></p></span>-->
+            <div th:each="item : ${seckillOrders}" style="height: 225px; border-color: antiquewhite;border-width: 1px;margin-left: 20px;border: solid;margin-top: 20px;width: 1100px">
+                <div style="height: 200px" th:each="goods : ${goods}" th:if="${item.goodsId} == ${goods.goodsId}">
+                    <div >
+                    <div style="display: inline-block;height: 180px; width:200px;margin-top: 20px;float: top;margin-left: 10px;position: absolute">
+                        <img th:src="${goods.image}" style="height: 150px;width: 150px;"/>
+                        <button th:if="${item.state} != '已支付'" class="paybtn btn btn-success" style="margin-top: 11px;margin-left: 50px;" th:id="${item.orderNo}">支付</button>
+                    </div>
+
+
+                    <div style="display: inline-block; margin-left: 200px; width: 800px;margin-top: 0;">
+                        <br>
+                        <div  style="height:40px "><b>商品:</b><p th:text="${goods.goodsName}"></p> </div>
+                        <br>
+                        <div style="width: 800px">
+                            <br>
+                            创建时间：<p th:text="${item.createTime}"></p>
+                            <br>
+                            支付状态：<p th:text="${item.state}"></p>
+                        </div>
+                    </div>
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -61,11 +76,32 @@
 <script type="text/javascript" th:src="@{../../js/bootstrap.min.js}"></script>
 <script>
     $(function () {
-        var user=[[${session.session_user}]];
-        if( user == null)
-        {
-            window.close();
-        }
+
+
+        $(".paybtn").click(function () {
+           var order_no = $(this).attr("id");
+           $.ajax({
+              url:"/seckill/pay",
+              type:"post",
+              data:{"orderNo":order_no},
+              dataType:"text",
+              success:function (res) {
+                  if(res == "success")
+                  {
+                      alert("支付成功！！！");
+                      window.location.reload();
+                  }
+                  else {
+                      alert("支付失败！！！")
+                  }
+
+              } ,
+               error:function (err) {
+                   alert("支付失败！！！")
+                   console.log(err)
+               }
+           });
+        });
     });
 </script>
 </body>

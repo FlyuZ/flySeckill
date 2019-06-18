@@ -6,7 +6,7 @@
 </head>
 <body>
   <div th:fragment="goods_guide">
-      <nav class="navbar-default navbar-side" role="navigation" >
+      <nav  role="navigation" style="height: 100%" >
           <div class="sidebar-collapse" style="display: inline-block;float: left;width: 150px;text-align: center;">
               <ul class="nav" style="height: 100%; width: inherit;" id="main-menu_goods">
                   <li>
@@ -32,7 +32,7 @@
   </div>
 
 <div th:fragment="information_guide">
-    <nav class="navbar-default navbar-side" role="navigation" >
+    <nav  role="navigation" style="height: 100%">
         <div class="sidebar-collapse" style="display: inline-block;float: left;width: 150px;text-align: center;height: 100%">
             <ul class="nav" id="main-menu_information">
                 <li>
@@ -49,6 +49,9 @@
                 </li>
                 <li>
                     <a href="/infor/comment"><i class="fa fa-file-text-o"></i> &nbsp;&nbsp;我的评论</a>
+                </li>
+                <li>
+                    <a href="/infor/exit"><i class="fa fa-file-text-o"></i> &nbsp;&nbsp;退出登陆</a>
                 </li>
             </ul>
         </div>

@@ -37,6 +37,48 @@ var seckill = {
                                 var stateInfo = killResult['stateInfo'];
                                 //3. 显示秒杀结果
                                 node.html('<span class="label label-success">' + stateInfo + '</span>');
+
+                                if (stateInfo == "秒杀成功") {
+                                    var order_show = $('#killPhoneModal');
+
+                                    var data= result['data'];
+                                    var order=data['seckillOrder'];
+                                    var order_no=order['orderNo'];
+                                    order_show.modal({
+                                        show: true,
+                                        backdrop: 'static', //禁止位置关闭
+                                        keyboard: false //关闭键盘事件
+                                    });
+                                    $("#pay_Btn").click(function () {
+                                        $.ajax({
+                                            url:"/seckill/pay",
+                                            type:"post",
+                                            dataType:"text",
+                                            data: {"orderNo": order_no},
+                                            success:function (res) {
+                                                if (res == "success")
+                                                {
+                                                    order_show.modal('hide');
+                                                    alert("支付成功！！！");
+                                                }
+                                                else
+                                                {
+                                                    order_show.modal('hide');
+                                                    alert("支付失败！！！");
+                                                }
+                                                console.log(res);
+                                            },
+                                            error:function (err) {
+                                                order_show.modal('hide');
+                                                alert("支付失败！！！");
+                                                console.log(err)
+                                            }
+                                        })
+                                    });
+                                    $("#cancel_Btn").click(function () {
+                                        order_show.modal('hide');
+                                    });
+                                }
                             }
                         })
                     });

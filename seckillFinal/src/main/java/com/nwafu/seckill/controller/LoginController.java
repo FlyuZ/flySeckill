@@ -1,6 +1,13 @@
 package com.nwafu.seckill.controller;
 
 
+import com.aliyuncs.CommonRequest;
+import com.aliyuncs.CommonResponse;
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.IAcsClient;
+import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.http.MethodType;
+import com.aliyuncs.profile.DefaultProfile;
 import com.nwafu.seckill.entity.User;
 import com.nwafu.seckill.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +26,7 @@ public class LoginController {
 
     @Autowired
     private LoginService userLoginService;
+
 
     @RequestMapping(value = {"/loginpage"})
     public String LoginPage() {
@@ -50,6 +58,11 @@ public class LoginController {
         return "page/register";
     }
 
+    @RequestMapping(value = {"/updatepwdpage"})
+    public String updatepwdpage() {
+        return "page/find_pwd";
+    }
+
     /**
      * 注册新用户
      *
@@ -68,5 +81,62 @@ public class LoginController {
         } else {
             return "success";
         }
+    }
+
+    /**
+     * 找回密码
+     */
+    @PostMapping(value = {"/updatePassword"})
+    @ResponseBody
+    public String updatePassword(@RequestParam("username") String username,
+                                 @RequestParam("password") String password) {
+        int res = userLoginService.updatePassword(username, password);
+        if (res == 1)
+            return "success";
+        else
+            return "failed";
+    }
+
+    /**
+     * 发送验证码
+     */
+    @PostMapping(value = {"/getMsg"})
+    @ResponseBody
+    public String getMsg(@RequestParam("username") String username, HttpServletRequest request) {
+        String msg = sendMsg(username);
+        request.getSession().setAttribute("msg", msg);
+        if (msg != null)
+            return "success";
+        else
+            return "failed";
+    }
+
+    private String sendMsg(String phone) {
+        String accessKeyId = "";
+        String secret = "";
+        DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId, secret);
+        IAcsClient client = new DefaultAcsClient(profile);
+
+        int random = (int) ((Math.random() * 9 + 1) * 100000);
+        String msgValue = String.valueOf(random);
+        String msg = "{\"code\":\"" + msgValue + "\"}";
+        //System.out.println(msg);
+        CommonRequest request = new CommonRequest();
+        request.setMethod(MethodType.POST);
+        request.setDomain("dysmsapi.aliyuncs.com");
+        request.setVersion("2017-05-25");
+        request.setAction("SendSms");
+        request.putQueryParameter("RegionId", "cn-hangzhou");
+        request.putQueryParameter("PhoneNumbers", phone);
+        request.putQueryParameter("SignName", "fly秒杀");
+        request.putQueryParameter("TemplateCode", "SMS_167974549");
+        request.putQueryParameter("TemplateParam", msg);
+        try {
+            CommonResponse response = client.getCommonResponse(request);
+            System.out.println(response.getData());
+        } catch (ClientException e) {
+            e.printStackTrace();
+        }
+        return msgValue;
     }
 }

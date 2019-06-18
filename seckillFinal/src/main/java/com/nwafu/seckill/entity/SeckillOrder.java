@@ -110,4 +110,19 @@ public class SeckillOrder {
         this.address = address;
         this.price = price;
     }
+
+    @Override
+    public String toString() {
+        return "SeckillOrder{" +
+                "orderId=" + orderId +
+                ", userId=" + userId +
+                ", goodsId=" + goodsId +
+                ", orderNo='" + orderNo + '\'' +
+                ", state='" + state + '\'' +
+                ", createTime=" + createTime +
+                ", payTime=" + payTime +
+                ", address='" + address + '\'' +
+                ", price=" + price +
+                '}';
+    }
 }

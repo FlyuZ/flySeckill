@@ -11,12 +11,15 @@ public class CommentTemp {
 
     private String image;  //商品图片
 
-    public CommentTemp(Integer goodsId, Integer userId, String commentText, String goodsName, String image) {
+    private String nickname;
+
+    public CommentTemp(Integer goodsId, Integer userId, String commentText, String goodsName, String image, String nickname) {
         this.goodsId = goodsId;
         this.userId = userId;
         this.commentText = commentText;
         this.goodsName = goodsName;
         this.image = image;
+        this.nickname = nickname;
     }
 
     public Integer getGoodsId() {
@@ -57,5 +60,13 @@ public class CommentTemp {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 }

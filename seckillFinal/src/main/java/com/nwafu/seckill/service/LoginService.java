@@ -31,4 +31,7 @@ public class LoginService {
         return userMapper.adduser(username, password, nickname);
     }
 
+    public int updatePassword(String username, String password){
+        return userMapper.updatePassword(username, password);
+    }
 }

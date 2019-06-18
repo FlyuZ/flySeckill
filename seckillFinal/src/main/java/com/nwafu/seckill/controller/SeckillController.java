@@ -3,9 +3,7 @@ package com.nwafu.seckill.controller;
 import com.nwafu.seckill.dto.Exposer;
 import com.nwafu.seckill.dto.SeckillExecution;
 import com.nwafu.seckill.dto.SeckillResult;
-import com.nwafu.seckill.entity.Category;
-import com.nwafu.seckill.entity.Goods;
-import com.nwafu.seckill.entity.User;
+import com.nwafu.seckill.entity.*;
 import com.nwafu.seckill.enums.SeckillStatEnum;
 import com.nwafu.seckill.exception.RepeatKillException;
 import com.nwafu.seckill.exception.SeckillCloseException;
@@ -76,7 +74,9 @@ public class SeckillController {
         if (goods == null) {
             return "page/goods";  //没找到，返回首页 ，一般不会出现
         }
+        List<CommentTemp> comments = seckillService.findGoodsComment(goodsId);
         model.addAttribute("goods", goods);
+        model.addAttribute("comments",comments);
         if (user == null) {
             return "page/goods_detail";
         }
@@ -153,6 +153,17 @@ public class SeckillController {
             return new SeckillResult<SeckillExecution>(true, seckillExecution);
         }
     }
+
+    @ResponseBody
+    @PostMapping(value = "/pay")
+    public String pay( @RequestParam("orderNo") String orderNo){
+        int res = seckillService.updateState("已支付", orderNo);
+        if(res == 1)
+        return "success";
+        else
+            return "failed";
+    }
+
 
     @ResponseBody
     @GetMapping(value = "/time/now")

@@ -2,10 +2,7 @@ package com.nwafu.seckill.mapper;
 
 
 import com.nwafu.seckill.entity.SeckillOrder;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -30,14 +27,16 @@ public interface SeckillOrderMapper {
     /**
      * 根据秒杀用户ID查询该用户的所有订单明细数据
      */
-    @Select("SELECT * FROM seckill_order where user_id = #{userId}")
+    @Select("SELECT user_id, goods_id, order_no, state, create_time, pay_time, address, price FROM seckill_order where user_id = #{userId}")
     List<SeckillOrder> findByUserId(@Param("userId") int userId);
 
-    @Select("SELECT * FROM seckill_order where user_id = #{userId}")
-    List<String> test(@Param("userId") int userId);
 
     @Select("select count(*) from seckill_order where user_id = #{userId} AND goods_id = #{goodsId}")
     int findExist(@Param("userId") int userId, @Param("goodsId") int goodsId);
 
-
+    /**
+     * 更改支付状态
+     */
+    @Update("UPDATE seckill_order SET state = #{state} WHERE order_no = #{orderNo}")
+    int updateState(@Param("state") String state, @Param("orderNo") String orderNo);
 }

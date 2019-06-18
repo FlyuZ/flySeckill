@@ -33,8 +33,10 @@ public class UserService {
         return userMapper.getByName(username);
     }
 
-    public void inserIcon(String filename, int userId) {
-      //  userMapper.addIcon(filename, userId);
+
+
+    public Goods findGoods(int goodsId){
+        return goodsMapper.findById(goodsId);
     }
 
     //评论
@@ -43,7 +45,7 @@ public class UserService {
         List<CommentTemp> commentTemps = new ArrayList<>();
         for(Comment comment : comments){
             Goods goods = goodsMapper.findById(comment.getGoodsId());
-            commentTemps.add(new CommentTemp(comment.getGoodsId(), comment.getUserId(),comment.getCommentText(), goods.getGoodsName(), goods.getImage()));
+            commentTemps.add(new CommentTemp(comment.getGoodsId(), comment.getUserId(),comment.getCommentText(), goods.getGoodsName(), goods.getImage(), null));
         }
         return commentTemps;
     }

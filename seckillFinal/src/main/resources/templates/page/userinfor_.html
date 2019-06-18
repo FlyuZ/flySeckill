@@ -47,12 +47,15 @@
         border: 1px solid grey;
         border-collapse: collapse;
         padding: 5px;
+        text-align: center;
     }
     table tr:nth-child(odd) {
         background-color: #f1f1f2;
+        text-align: center;
     }
     table tr:nth-child(even) {
         background-color: #ffffff;
+        text-align: center;
     }
 </style>
 <body>
@@ -63,7 +66,7 @@
         <div id="information_table">
             <div style="height: 150px;width: 150px;display: inline-block; margin-left: 30px; margin-top: 30px;text-align: center">
                 <form id="icon"  method="post" action="/seckill/upload" enctype="multipart/form-data" target="frameName">
-                <img  style="height: auto;width: auto;" th:src="@{${session.session_user.icon}}"/>
+                <img  style="height: 150px;width: 150px;" th:src="@{${session.session_user.icon}}"/>
                     <button type="button" id="select_icon" class="btn btn-info" style="margin-top: 10px">修改头像</button>
                     <div class="surfaceThree" id="select_file" style="display: none;margin-top: 10px;margin-left: 15px">选择文件
                         <input type = "file" name="fileName" accept="image/png,image/jpeg" id="icon_input" />
@@ -98,21 +101,39 @@
         <div id="newaddress_table" >
             <ul>
                 <li>
-                    &nbsp;&nbsp;&nbsp;详细地址：<input id="address" style="height: 30px;width: 500px;" maxlength="75" placeholder="请填写详细地址"/>
+                    &nbsp;&nbsp;&nbsp;详细地址：<input id="address" class="form-control" style="height: 30px;width: 500px;" maxlength="75" placeholder="请填写详细地址"/>
                 </li>
                 <br/>
                 <li>
-                    收货人姓名：<input id="name" style="height: 30px;width: 500px;" maxlength="25" placeholder="长度不超过25字符"/>
+                    收货人姓名：<input id="name" class="form-control" style="height: 30px;width: 500px;" maxlength="25" placeholder="长度不超过25字符"/>
                 </li>
                 <br/>
                 <li>
-                    &nbsp;&nbsp;&nbsp;手机号码：<input id="telephone" maxlength="11" style="height: 30px;width: 500px;" placeholder="请填写手机号码"/>
+                    &nbsp;&nbsp;&nbsp;手机号码：<input id="telephone" class="form-control" maxlength="11" style="height: 30px;width: 500px;" placeholder="请填写手机号码"/>
                 </li>
             </ul>
             <button class="btn btn-info" id="sbtaddress" style="text-align: center;margin-bottom: 11px;margin-left: 520px">确认</button>
         </div>
     </div>
-    <div style="margin-top: 576px;float: top;margin-left: 150px" th:if="${addressList} != null">
+
+    <div style="margin-top: 600px;float: top;margin-left: 150px">
+        <p>默认地址</p>
+        <table  style="width: 640px;text-align: center">
+            <tr>
+                <th style="width: 240px">收货人</th>
+                <th style="width: 300px">详细地址</th>
+                <th style="width: 100px">电话</th>
+            </tr>
+            <tr id="default_show">
+                <th style="width: 240px"></th>
+                <th style="width: 300px"></th>
+                <th style="width: 100px"></th>
+            </tr>
+
+        </table>
+    </div>
+
+    <div style="margin-top: 20px;float: top;margin-left: 150px" th:if="${addressList} != null">
         <p>已保存地址：</p>
         <table id="addresstable" style="width: 700px;text-align: center">
             <tr>
@@ -121,14 +142,6 @@
                 <th style="width: 100px">电话</th>
                 <th style="width: 350px">操作</th>
             </tr>
-            <!---->
-            <!--<tr   th:each="row : ${addressList}" th:id="${row.addressId}" >-->
-                <!--<td style="width: 140px"><input disabled="disabled" type="text" th:value="${row.name}"/><span class="flag" style="background-color: #ff8e0f">默认地址</span></td>-->
-                <!--<td style="width: 300px"><input disabled="disabled" type="text" th:value="${row.addressText}"/></td>-->
-                <!--<td style="width: 100px"><input disabled="disabled" type="text"  th:value="${row.phone}"/></td>-->
-                <!--<td style="width: 200px"><button class="btn-blue default">设置为默认地址</button><button class="btn-danger delete">删除</button></td>-->
-            <!--</tr>-->
-
             <tr   th:each="row : ${addressList}" th:id="${row.addressId}" >
                 <td style="width: 140px" th:text="${row.name}"></td>
                 <td style="width: 300px" th:text="${row.addressText}"></td>
@@ -179,17 +192,22 @@
 
     $(function () {
 
-        var user=[[${session.session_user}]];
-        if( user == null)
-        {
-            window.close();
-        }
+        var default_address=[[${session.session_user.address}]];
+
+        var dft_address=default_address.split(",");
+
+        var address_show=$("#default_show th");
+
+        address_show.eq(0).prepend(dft_address[2]);
+        address_show.eq(1).text(dft_address[0]);
+        address_show.eq(2).text(dft_address[1]);
+
 
         setOnloadCallBask(document.getElementById("iconResult"),'load',ActionHandler);
 
         $("#icon_input").change(function () {
             var filename=$(this).val();
-            if(!/\.(gif|jpg|jpeg|png|GIF|JPG|JPEG|PNG)$/.test(filename))
+            if(!/\.(jpg|jpeg|png|JPG|JPEG|PNG)$/.test(filename))
             {
                 $(this).val("");
                 alert("图片类型必须是jpg,png中的一种");
@@ -331,6 +349,7 @@
                     if(res == "success")
                     {
                         alert("设置成功！！！")
+                        window.location.reload();
                     }
                     else
                     {

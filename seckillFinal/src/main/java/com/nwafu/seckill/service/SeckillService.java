@@ -2,26 +2,23 @@ package com.nwafu.seckill.service;
 
 import com.nwafu.seckill.dto.Exposer;
 import com.nwafu.seckill.dto.SeckillExecution;
-import com.nwafu.seckill.entity.Category;
-import com.nwafu.seckill.entity.Comment;
-import com.nwafu.seckill.entity.Goods;
-import com.nwafu.seckill.entity.SeckillOrder;
+import com.nwafu.seckill.entity.*;
 import com.nwafu.seckill.enums.SeckillStatEnum;
 import com.nwafu.seckill.exception.RepeatKillException;
 import com.nwafu.seckill.exception.SeckillCloseException;
 import com.nwafu.seckill.exception.SeckillException;
-import com.nwafu.seckill.mapper.CategoryMapper;
-import com.nwafu.seckill.mapper.CommentMapper;
-import com.nwafu.seckill.mapper.GoodsMapper;
-import com.nwafu.seckill.mapper.SeckillOrderMapper;
+import com.nwafu.seckill.mapper.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -52,6 +49,9 @@ public class SeckillService {
     private CommentMapper commentMapper;
 
     @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
     private RedisTemplate redisTemplate;
 
     public List<Goods> findAllGoods() {
@@ -74,6 +74,10 @@ public class SeckillService {
     public List<Goods> findByCategory(int categoryId) {
         List<Goods> goodsList = goodsMapper.findByCategory(categoryId);
         return goodsList;
+    }
+
+    public int updateState(String state, String orderNo){
+        return seckillOrderMapper.updateState(state, orderNo);
     }
 
     public List<Category> findAllCategory() {
@@ -99,8 +103,14 @@ public class SeckillService {
     }
 
     //返回该商品评论
-    public List<Comment> findGoodsComment(int goodsId){
-        return commentMapper.findByGoodsId(goodsId);
+    public List<CommentTemp> findGoodsComment(int goodsId){
+        List<Comment> comments = commentMapper.findByGoodsId(goodsId);
+        List<CommentTemp> commentTemps = new ArrayList<>();
+        for(Comment  comment : comments){
+            User user = userMapper.getById(comment.getUserId());
+            commentTemps.add(new CommentTemp(goodsId, user.getUserId(), comment.getCommentText(), null, null, user.getNickname()));
+        }
+        return commentTemps;
     }
 
     //返回秒杀接口
@@ -192,9 +202,13 @@ public class SeckillService {
         if (address == null) {
             address = "";
         }
-        int res = seckillOrderMapper.insertOrder(userId, goodsId, orderNo, state, nowTime, null, address, price);
+        Calendar c = Calendar.getInstance();
+        c.setTime(nowTime);
+        c.add(Calendar.DAY_OF_MONTH, 1);
+        Date payTime = c.getTime();
+        int res = seckillOrderMapper.insertOrder(userId, goodsId, orderNo, state, nowTime, payTime, address, price);
         if (res > 0) {
-            SeckillOrder seckillOrder = new SeckillOrder(userId, goodsId, orderNo, state, nowTime, null, address, price);
+            SeckillOrder seckillOrder = new SeckillOrder(userId, goodsId, orderNo, state, nowTime, payTime, address, price);
             return new SeckillExecution(goodsId, SeckillStatEnum.SUCCESS, seckillOrder);
         } else {
             return new SeckillExecution(goodsId, SeckillStatEnum.INNER_ERROR, null);
