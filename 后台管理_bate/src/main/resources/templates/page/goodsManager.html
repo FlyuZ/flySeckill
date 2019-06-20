@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>商品管理</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+    <link rel="stylesheet" th:href="@{../../lib/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+
+    <style type="text/css">
+
+        /*设置div样式的整体布局*/
+        .page-icon{
+            margin-top: 10px;
+            font-size:0;/*修复行内元素之间空隙间隔*/
+            text-align:center;/*设置内容居中显示*/
+        }
+
+        /*设置共有的的样式布局，主要是进行代码优化，提高运行效率*/
+        .page-icon a,.page-next{
+            border-radius:3px;
+            padding:4px 10px 5px;
+            font-size:14PX;/*修复行内元素之间空隙间隔*/
+            margin-right:10px;
+        }
+
+        /*对 a 标签进行样式布局 */
+        .page-icon a{
+            text-decoration:none;/*取消链接的下划线*/
+            cursor:pointer;
+        }
+
+        .page-next{
+            border:1px solid #ccc;
+        }
+
+        .page-current{
+            color:#ff6600;
+            padding:4px 10px 5px;
+            font-size:14PX;/*修复行内元素之间空隙间隔*/
+            border: none;
+        }
+
+        .flag{
+            color:#005aa0;
+            border:1px solid #ccc;
+        }
+
+    </style>
+
+</head>
+<body th:if="${session.session_admin} != null">
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header" style="width: 100%">
+            <a class="navbar-brand" href="#" style="font-size: 24px">商品管理</a>
+        </div>
+    </div>
+</nav>
+<div id="wrapper">
+    <nav class="navbar-default navbar-side" role="navigation" >
+        <div class="sidebar-collapse" style="display: inline-block;float: left;width: 150px;text-align: center">
+            <ul class="nav" id="main-menu">
+
+                <li>
+                    <a href="/goods/goodsManager"><i class="fa fa-desktop"></i> 商品管理 </a>
+                </li>
+
+                <li>
+                    <a href="/goods/insertpage"><i class="fa fa-dashboard"></i> 添加商品 </a>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+
+    <div id="page-wrapper" style="display: inline-block;margin-left: 10px;width: 1700px;position: absolute;">
+        <div id="page-inner">
+
+            <div class="row">
+                <!-- 个人信息 -->
+                <div class="col-md-12">
+                    <div class="panel panel-primary" >
+                        <div class="panel-heading">
+                            <div class="" role="form">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="input-group" style="width: 100%">
+                                            <span style="display: inline-block" >请选择查询方式:<select style="color: #000000" id="category">
+                                                <option>全部</option>
+                                                <option>日期</option>
+                                                <option>商品名称</option>
+                                            </select></span>
+
+                                            <span id="date" style=" margin-left: 40px; display: none;">
+                                                <p style="display: inline-block">请选择日期区间</p><span style="display: inline-block;margin-left: 20px"><span th:replace="public/date :: date_1" style="display: inline-block"></span></span>
+                                                <p style="display: inline-block;margin-left: 20px">至</p><span style="display: inline-block;margin-left: 20px"><span th:replace="public/date :: date_2"></span></span>
+                                                <div class="input-group-btn" style="display: inline-block">
+                                                <button class="btn btn-default" style="display: inline-block;margin-left: 10px">搜索</button>
+                                                </div>
+                                            </span>
+                                            <span id="search_goods_name"  style=" margin-left: 40px;display: none">
+                                                <input type="text" placeholder="输入商品名称" style="display: inline-block;width: 400px;color: #000000">
+                                                <div class="input-group-btn" style="display: inline-block">
+                                                <button class="btn btn-default">搜索</button>
+                                                </div>
+                                            </span>
+
+                                            <span id="search_all"  style=" margin-left: 40px;">
+                                            </span>
+
+                                        </div><!-- /input-group -->
+                                    </div><!-- /.col-lg-6 --><br>
+                                </div><!-- /.row -->
+                            </div>
+                        </div>
+                        <div class="panel-body" >
+                            <table class="table table-bordered table-hover" id = "table">
+                                <th>商品id</th>
+                                <th>商品编号</th>
+                                <th>商品名称</th>
+                                <th>商品描述</th>
+                                <th>商品原价</th>
+                                <th>商品现价</th>
+                                <th>库存数量</th>
+                                <th>秒杀开始时间</th>
+                                <th>秒杀结束时间</th>
+                                <th>操作</th>
+                                <tr th:each="row : ${list.list}">
+                                    <td style="width: 60px" th:text="${row.goodsId}"></td>
+                                    <td style="width: 75px" th:text="${row.goodsNo}"></td>
+                                    <td style="width: 500px" th:text="${row.goodsName}"></td>
+                                    <td style="width: 200px" th:text="${row.goodsDescribe}"></td>
+                                    <td th:text="${row.originalPrice}"></td>
+                                    <td th:text="${row.currentPrice}"></td>
+                                    <td th:text="${row.stockCount}"></td>
+                                    <td th:text="${row.startTime}"></td>
+                                    <td th:text="${row.endTime}"></td>
+                                    <td><button  class="delete  btn btn-default" th:id="${row.goodsId}">删除</button></td>
+                                </tr>
+                            </table>
+                            <div class="page-icon">
+                                <span class="page-disabled"><i></i>上一页</span>
+                                <span class="page-current">1</span>
+                                <span class="page-next">下一页<i></i></span>
+
+                            </div>
+                        </div>
+
+                </div>
+                <!-- 当前用户数量 -->
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" th:src="@{../../js/date.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+    $(function () {
+        var pages_show_size = 3;
+
+        var Query_Mode = "all";
+
+
+        init([[${list}]]);
+
+        $("#date button").click(function () {
+            getpage(1)
+        });
+
+
+        $("#search_goods_name button").click(function () {
+            getpage(1)
+        });
+
+        $("#category").change(function () {
+           var select = $(this).val();
+           if(select == "全部")
+           {
+               $("#search_goods_name").hide();
+               $("#date").hide();
+               $("#search_all").show();
+               Query_Mode = "all";
+               getpage(1);
+           }else if(select == "日期")
+           {
+               $("#search_goods_name").hide();
+               $("#search_all").hide();
+               $("#date").show();
+               Query_Mode = "time";
+           }
+           else
+           {
+               $("#search_all").hide();
+               $("#date").hide();
+               $("#search_goods_name").show();
+               Query_Mode = "name";
+           }
+        });
+
+        $(".page-icon").on("click",".flag",function () {
+            var id = $(this).text();
+            getpage(id)
+        });
+
+        $(".page-icon").on("click","#next",function () {
+           var current_page = parseInt($(".page-current").text());
+
+           getpage(current_page+1);
+        });
+
+        $(".page-icon").on("click","#last",function () {
+            var current_page =parseInt($(".page-current").text());
+
+            getpage(current_page-1);
+        });
+
+        $("table").on("click",".delete",function () {
+            var id=$(this).attr("id");
+            var row=$(this).parent().parent();
+            $.ajax({
+                url:id+"/deleteById",
+                type:"post",
+                dataType:"text",
+                success:function (res) {
+                    if(res == "success")
+                    {
+                        row.remove();
+                        alert("删除成功！！！")
+                    }
+                    else {
+                        alert("删除失败！！！")
+                    }
+                },
+                error:function (err) {
+                    console.log(err)
+                    alert("删除失败！！！")
+                }
+            });
+        });
+
+
+
+        function isValid_date() {
+
+            if($("#year_1").val() == "请选择")
+                return false;
+            if($("#month_1").val() == "请选择")
+                return false;
+            if($("#day_1").val() == "请选择")
+                return false;
+            if($("#year_2").val() == "请选择")
+                return false;
+            if($("#month_2").val() == "请选择")
+                return false;
+            if($("#day_2").val() == "请选择")
+                return false;
+
+            return true;
+        }
+
+        function init(pageinfo) {
+            var pages = parseInt(pageinfo['pages']);
+            if(pages == 1)
+            {
+                $(".page-icon").html('<a class="page-current">1</a>');
+                return;
+            }
+
+            if( pages < pages_show_size )
+            {
+                $(".page-icon").html('<a class="page-current">1</a>');
+                for (var i = 2; i<pages+1 ; i++)
+                {
+                    $(".page-icon").append('<a class="flag" >'+i+'</a>');
+                }
+                $(".page-icon").append('<a class="page-next" id="next">下一页</a>');
+            }
+            else {
+                $(".page-icon").html('<a class="page-current">1</a>');
+                for (var i = 2; i< pages_show_size+1; i++)
+                {
+                    $(".page-icon").append('<a class="flag">'+i+'</a>');
+                }
+                $(".page-icon").append('<a class="page-next" id="next">下一页</a>');
+            }
+        }
+
+        function getpage(page_id){
+            if(Query_Mode == "all")
+            {
+                var Url = "findAll";
+                var json = { "id" : page_id};
+
+            }else if(Query_Mode == "time")
+            {
+                if(!isValid_date())
+                {
+                    alert("日期选择错误！！！");
+                    return;
+                }
+                var Url = "findByTime";
+                var month_1= parseInt($("#month_1").val());
+                var month_2= parseInt($("#month_2").val());
+                var start_time1 = new Date($("#year_1").val(),month_1 - 1,$("#day_1").val());
+                var start_time2 = new Date($("#year_2").val(),month_2 - 1,$("#day_2").val());
+
+                var json = { "id" : page_id ,"start_time1":start_time1, "start_time2":start_time2 };
+            }
+            else {
+                var Url = "findByName";
+                var name = $("#search_goods_name input").val();
+                var json = {"id" : page_id , "goods_name" : name};
+            }
+
+            $.ajax({
+                url:Url,
+                type:"post",
+                dataType:"json",
+                data:json,
+                success : function (data) {
+                    if(data != null)
+                    {
+                        $("#table tr").remove();
+                        $("#table th").remove();
+                        $("#table").prepend('<tr><th>商品id</th>' +
+                            '                                <th>商品编号</th>' +
+                            '                                <th>商品名称</th>' +
+                            '                                <th>商品描述</th>' +
+                            '                                <th>商品原价</th>' +
+                            '                                <th>商品现价</th>' +
+                            '                                <th>库存数量</th>' +
+                            '                                <th>秒杀开始时间</th>' +
+                            '                                <th>秒杀结束时间</th>' +
+                            '                                <th>操作</th></tr>');
+                        var pages = null;
+                        for ( var i=0 ; i<data.size ; i++)
+                        {
+                            var list = data['list'];
+                            pages = parseInt(data['pages']);
+                            var row = list[i];
+                            $("#table").append('<tr>' +
+                                '                                    <td style="width: 60px" >'+row['goodsId']+'</td>' +
+                                '                                    <td style="width: 75px" >'+row['goodsNo']+'</td>' +
+                                '                                    <td style="width: 500px">'+row['goodsName']+'</td>' +
+                                '                                    <td style="width: 200px">'+row['goodsDescribe']+'</td>' +
+                                '                                    <td >'+row['originalPrice']+'</td>' +
+                                '                                    <td >'+row['currentPrice']+'</td>' +
+                                '                                    <td >'+row['stockCount']+'</td>' +
+                                '                                    <td >'+row['startTime']+'</td>' +
+                                '                                    <td >'+row['endTime']+'</td>' +
+                                '                                    <td><button  class="delete  btn btn-default" id="'+row['goodsId']+'">删除</button></td>' +
+                                '                                </tr>')
+                        }
+                        current_page_id(page_id , pages, data);
+                    }
+                    else
+                    {
+                        $("#table tr").remove();
+                        console.log(data);
+                        alert("查询为空！！！");
+                    }
+                },
+                error : function (err) {
+                    console.log(err);
+                    alert("获取失败！！！");
+                }
+            });
+
+        }
+
+        function append_a( page_guide , id) {
+            page_guide.append('<a class="flag">'+id+'</a>');
+        }
+
+
+        function current_page_id(input_page_id , pages , data) {
+
+            var page_id = parseInt(input_page_id);
+            var page_guide = $(".page-icon");
+
+            if(data['pages'] == 0 || data['pages'] == 1)
+            {
+                page_guide.html('<a class="page-current">1</a>');
+                return;
+            }
+            if(pages <= pages_show_size )
+            {
+                init(data);
+                if(page_id == 1)
+                    return;
+                else if(page_id == pages)
+                {
+                    page_guide.prepend('<a class="page-next" id="last">上一页</a>');
+                    page_guide.children().eq(1).removeClass("page-current");
+                    page_guide.children().eq(1).addClass("flag");
+                    page_guide.children().eq(pages).removeClass("flag");
+                    page_guide.children().eq(pages).addClass("page-current");
+                    $("#next").remove();
+                    return;
+                }
+                else
+                {
+                    page_guide.prepend('<a class="page-next" id="last">上一页</a>');
+                    page_guide.children().eq(1).removeClass("page-current");
+                    page_guide.children().eq(1).addClass("flag");
+                    page_guide.children().eq(page_id).removeClass("flag");
+                    page_guide.children().eq(page_id).addClass("page-current");
+                    return;
+                }
+            }
+
+            if (page_id < (pages_show_size + 1)/2)
+            {
+
+                    init(data);
+
+                    if(page_id == 1)
+                    {
+                        return;
+                    }
+                    page_guide.prepend('<a class="page-next" id="last">上一页</a>');
+                    page_guide.children().eq(1).removeClass("page-current");
+                    page_guide.children().eq(1).addClass("flag");
+                    page_guide.children().eq(page_id).removeClass("flag");
+                    page_guide.children().eq(page_id).addClass("page-current");
+                    return;
+            }
+
+            if (page_id > pages - (pages_show_size + 1)/2)
+            {
+                page_guide.html('<a class="page-next" id="last">上一页</a>');
+                for( var  i= pages-pages_show_size + 1 ; i <= pages ; i++)
+                    append_a(page_guide,i);
+                if(page_id == pages)
+                {
+                    page_guide.children().eq(pages_show_size).removeClass("flag");
+                    page_guide.children().eq(pages_show_size).addClass("page-current");
+                    return;
+                }
+                else {
+                    page_guide.children().eq(page_id-pages+pages_show_size).removeClass("flag");
+                    page_guide.children().eq(page_id-pages+pages_show_size).addClass("page-current");
+                    page_guide.append('<a class="page-next" id="next">下一页</a>');
+                    return;
+                }
+            }
+
+            page_guide.html('<a class="page-next" id="last">上一页</a>');
+            var temp_id = page_id - (pages_show_size-1)/2 ;
+            for (var i = 0; i< pages_show_size; i++)
+            {
+               append_a(page_guide,temp_id);
+               temp_id++;
+            }
+            page_guide.append('<a class="page-next" id="next">下一页</a>');
+            page_guide.children().eq((pages_show_size + 1)/2).removeClass("flag");
+            page_guide.children().eq((pages_show_size + 1)/2).addClass("page-current");
+
+
+
+
+
+        }
+    });
+
+</script>
+
+</body>
+</html>

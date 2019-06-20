@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>商品管理</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+    <link rel="stylesheet" th:href="@{../../lib/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+
+
+</head>
+<body th:if="${session.session_admin} != null">
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header" style="width: 100%">
+            <a class="navbar-brand" href="#" style="font-size: 24px">商品管理</a>
+        </div>
+    </div>
+</nav>
+<div id="wrapper">
+    <nav class="navbar-default navbar-side" role="navigation" >
+        <div class="sidebar-collapse" style="display: inline-block;float: left;width: 150px;text-align: center">
+            <ul class="nav" id="main-menu">
+
+                <li>
+                    <a href="/goods/goodsManager"><i class="fa fa-desktop"></i> 商品管理 </a>
+                </li>
+
+                <li>
+                    <a href="/goods/insertpage"><i class="fa fa-dashboard"></i> 添加商品 </a>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+
+    <div id="page-wrapper" style="display: inline-block;margin-left: 9%;width: 1700px;position: absolute;width: auto">
+        <div id="page-inner">
+            <!-- 页头 -->
+            <!--<div class="row">
+                <div class="col-md-12">
+                    <h2 class="page-header">
+                        商品添加
+                    </h2>
+                </div>
+            </div>-->
+            <!-- 页面 -->
+            <div class="row" style="width: auto">
+                <!-- 个人信息 -->
+                <div class="col-md-12" style="width: auto">
+                    <div class="panel panel-primary" style="width: 1400px">
+                        <div class="panel-heading">
+                                商品添加 (*^▽^*)
+                        </div>
+                        <div class="panel-body"  style="display: inline-block;">
+                            <div style="margin-left: 30px" id="add_goods">
+                                商品分类：<select style="width: 500px" class="form-control">
+                                <option value="0">请选择</option>
+                                <option value="1">数码</option>
+                                <option value="2">服饰</option>
+                                <option value="3">食品</option>
+                                <option value="4">图书</option>
+                            </select>
+
+                                商品编号：<input class="form-control" type="text" style="width: 500px" />
+                                商品名称：<input class="form-control" type="text" style="width: 500px"/>
+                                商品描述：<input class="form-control" type="text" style="width: 500px"/>
+                                原价：<input class="form-control" type="text" style="width: 500px"/>
+                                现价：<input class="form-control" type="text" style="width: 500px"/>
+                                图片：<input class="form-control" type="text" style="width: 500px"/>
+                                库存：<input class="form-control" type="text" style="width: 500px"/>
+                                开始时间(yyyy-MM-dd HH:mm)：<input class="form-control" type="datetime-local" style="width: 500px"/>
+                                结束时间(yyyy-MM-dd HH:mm)：<input class="form-control" type="datetime-local" style="width: 500px"/>
+                                <br/>
+                                <button id="submit" class="btn btn-default">保存</button>
+                            </div>
+
+                        </div>
+                        <img style="display: inline-block;float: right;margin-right: 8%" th:src="@{../../img/ice-cream.jpg}">
+                    </div>
+                </div>
+                <!-- 当前用户数量 -->
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script>
+    $(function () {
+        $("#submit").click(function () {
+
+            var goods=$("#add_goods").children();
+            if(goods.eq(0).val() == "0")
+            {
+                alert("请选择类别！！！");
+                return;
+            }
+
+
+            var json = {
+                "categoryid":goods.eq(0).val(),
+                "goodsno":goods.eq(1).val(),
+                "goodsname":goods.eq(2).val(),
+                "goodsdescribe":goods.eq(3).val(),
+                "currentprice":goods.eq(5).val(),
+                "stockcount":goods.eq(7).val(),
+                "starttime":goods.eq(8).val(),
+                "originalprice":goods.eq(4).val(),
+                "endtime":goods.eq(9).val(),
+                "image":goods.eq(6).val()
+            }
+
+            $.ajax({
+                url:"/goods/insert",
+                type:"post",
+                data:json,
+                dataType:"text",
+                success:function (res) {
+                    if(res == "success")
+                    {
+                        for(var i=0; i<10;i++)
+                            goods.eq(i).val("");
+
+                        alert("添加成功！！！")
+                    }
+                    else {
+                        alert("添加失败！！！")
+                    }
+                },
+                error:function (err) {
+                    console.log(err)
+                    alert("添加失败！！！")
+                }
+
+            })
+        });
+        });
+
+
+</script>
+
+</body>
+</html>
