@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>个人中心</title>
+    <link rel="stylesheet" th:href="@{../../css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{../../css/seckill.css}"/>
+    <link rel="stylesheet" th:href="@{../../css/seckill_item.css}"/>
+    <link rel="stylesheet" th:href="@{../../css/public.css}"/>
+    <link rel="shortcut icon" th:href="@{../../img/logo.png}"/>
+    <!-- FontAwesome Styles-->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <!--<link href="assets/css/font-awesome.css" rel="stylesheet" />-->
+    <link href="//cdn.bootcss.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Morris Chart Styles-->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'/>
+    <!-- TABLE STYLES-->
+    <style>
+        label {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<style type="text/css">
+    table, th , td  {
+        border: 1px solid grey;
+        border-collapse: collapse;
+        padding: 5px;
+    }
+    table tr:nth-child(odd) {
+        background-color: #f1f1f2;
+    }
+    table tr:nth-child(even) {
+        background-color: #ffffff;
+    }
+</style>
+<body>
+<div th:if="${session.session_user} != null">
+    <div th:replace="public/header :: information_header"></div>
+    <div th:replace="public/guide :: information_guide"></div>
+    <div id="order" style="position: absolute;margin-left: 150px;width: 100%;">
+        <span >
+            <h2>我的订单</h2>
+        </span>
+
+        <div>
+            <div th:each="item : ${seckillOrders}" style="height: 225px; border-color: antiquewhite;border-width: 1px;margin-left: 20px;border: solid;margin-top: 20px;width: 1100px">
+                <div style="height: 200px" th:each="goods : ${goods}" th:if="${item.goodsId} == ${goods.goodsId}">
+                    <div >
+                    <div style="display: inline-block;height: 180px; width:200px;margin-top: 20px;float: top;margin-left: 10px;position: absolute" th:id="${goods.goodsId}">
+                        <a  th:href="'/seckill/' + ${item.goodsId} + '/detail'" target="_blank">   <img th:src="${goods.image}" style="height: 150px;width: 150px;"/></a>
+                        <button th:if="${item.state} == '未支付'" class="paybtn btn btn-primary" style="margin-top: 11px;margin-left: 50px;" th:id="${item.orderNo}">支付</button>
+                        <button th:if="${item.state} == '已支付'" class="commentbtn btn btn-success" style="margin-top: 11px;margin-left: 50px;" th:id="${item.orderNo}">评论</button>
+                    </div>
+
+
+                    <div style="display: inline-block; margin-left: 200px; width: 800px;margin-top: 0;">
+                        <br>
+                        <div  style="height:40px "><b>商品:</b><p th:text="${goods.goodsName}"></p> </div>
+                        <br>
+                        <div style="width: 800px">
+
+                            创建时间：<p>[[${#dates.format(item.createTime, 'yyyy-MM-dd HH:mm:ss')}]]</p>
+
+                            订单状态：<p th:text="${item.state}"></p>
+
+                            地址：<p th:text="${item.address}"></p>
+                        </div>
+                    </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ><div th:replace="public/footer :: footer"></div></div>
+    </div>
+
+
+    <!--点击评论弹出-->
+    <div id="CommentModal" class="modal fade" style="display: none">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title text-center">
+                        <span class="fa fa-leanpub"> </span>评论
+                    </h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-8 col-xs-offset-2">
+                            <textarea rows="5"  type="text"  style="width: 100%;height: 100%" maxlength="500" id="comment_text" ></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <!--验证信息-->
+                    <span  style="margin-right: 40%;"></span>
+                    <button type="button" id="comment_btn" class="btn btn-success">
+                        提交
+                    </button>
+                    <button type="button" id="cancel_Btn" class="btn btn-danger">
+                        取消
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" th:src="@{../../js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+    $(function () {
+        var show = $("#CommentModal");
+        $(".paybtn").click(function () {
+           var order_no = $(this).attr("id");
+
+           $.ajax({
+              url:"/seckill/pay",
+              type:"post",
+              data:{"orderNo":order_no},
+              dataType:"text",
+              success:function (res) {
+                  if(res == "success")
+                  {
+                      alert("支付成功！！！");
+                      window.location.reload();
+                  }
+                  else {
+                      alert("支付失败！！！")
+                  }
+
+              } ,
+               error:function (err) {
+                   alert("支付失败！！！")
+                   console.log(err)
+               }
+           });
+        });
+
+        $(".commentbtn").click(function () {
+           var order_no = $(this).attr("id");
+           var goodid = $(this).parent().attr("id");
+           show.modal({
+               show: true,
+               backdrop: 'static', //禁止位置关闭
+               keyboard: false //关闭键盘事件
+           });
+
+            $("#comment_btn").click(function () {
+                var comment_text = $("#comment_text").val();
+                if(comment_text.length < 6  )
+                {
+                    alert("评论至少6个字符！！！");
+                    return;
+                }
+                $.ajax({
+                    url:"/infor/insertComment",
+                    type:"post",
+                    data: {
+                        "orderNo":order_no,
+                        "goodsId":goodid,
+                        "comment":comment_text
+                    },
+                    dataType: "text",
+                    success:function (res) {
+                        if(res == "success")
+                        {
+                            show.modal('hide');
+                            alert("评论成功！！！");
+                            window.location.reload();
+                        }
+                        else
+                        {
+                            show.modal('hide');
+                            alert("评论失败！！！")
+                        }
+                    },
+                    error:function (err) {
+                        show.modal('hide');
+                        alert("评论失败！！！");
+                        console.log(err);
+                    }
+                });
+            });
+
+            $("#cancel_Btn").click(function () {
+                $("#comment_text").val("");
+                show.modal('hide');
+            });
+        });
+
+
+    });
+</script>
+</body>
+</html>

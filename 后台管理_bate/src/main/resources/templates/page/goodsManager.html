@@ -130,18 +130,7 @@
                                 <th>秒杀开始时间</th>
                                 <th>秒杀结束时间</th>
                                 <th>操作</th>
-                                <tr th:each="row : ${list.list}">
-                                    <td style="width: 60px" th:text="${row.goodsId}"></td>
-                                    <td style="width: 75px" th:text="${row.goodsNo}"></td>
-                                    <td style="width: 500px" th:text="${row.goodsName}"></td>
-                                    <td style="width: 200px" th:text="${row.goodsDescribe}"></td>
-                                    <td th:text="${row.originalPrice}"></td>
-                                    <td th:text="${row.currentPrice}"></td>
-                                    <td th:text="${row.stockCount}"></td>
-                                    <td th:text="${row.startTime}"></td>
-                                    <td th:text="${row.endTime}"></td>
-                                    <td><button  class="delete  btn btn-default" th:id="${row.goodsId}">删除</button></td>
-                                </tr>
+
                             </table>
                             <div class="page-icon">
                                 <span class="page-disabled"><i></i>上一页</span>
@@ -166,8 +155,10 @@
 
         var Query_Mode = "all";
 
+        getpage(1);
 
-        init([[${list}]]);
+
+      //  init([[${list}]]);
 
         $("#date button").click(function () {
             getpage(1)
@@ -344,6 +335,15 @@
                             var list = data['list'];
                             pages = parseInt(data['pages']);
                             var row = list[i];
+
+                            var start_time_temp = new Date(row['startTime']).getTime();
+                            var end_time_temp = new Date(row['endTime']).getTime();
+
+
+                            var start_time = new Date( start_time_temp + 8*1000*60*60);
+                            var end_time = new Date( end_time_temp + 8*1000*60*60);
+
+
                             $("#table").append('<tr>' +
                                 '                                    <td style="width: 60px" >'+row['goodsId']+'</td>' +
                                 '                                    <td style="width: 75px" >'+row['goodsNo']+'</td>' +
@@ -352,8 +352,8 @@
                                 '                                    <td >'+row['originalPrice']+'</td>' +
                                 '                                    <td >'+row['currentPrice']+'</td>' +
                                 '                                    <td >'+row['stockCount']+'</td>' +
-                                '                                    <td >'+row['startTime']+'</td>' +
-                                '                                    <td >'+row['endTime']+'</td>' +
+                                '                                    <td >'+start_time+'</td>' +
+                                '                                    <td >'+end_time+'</td>' +
                                 '                                    <td><button  class="delete  btn btn-default" id="'+row['goodsId']+'">删除</button></td>' +
                                 '                                </tr>')
                         }

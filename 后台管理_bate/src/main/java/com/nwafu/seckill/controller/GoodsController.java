@@ -3,7 +3,6 @@ package com.nwafu.seckill.controller;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.nwafu.seckill.entity.Goods;
-import com.nwafu.seckill.service.AdminService;
 import com.nwafu.seckill.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
