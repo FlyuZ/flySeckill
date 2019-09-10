@@ -1,4 +1,4 @@
-﻿package com.nwafu.seckill.controller;
+package com.nwafu.seckill.controller;
 
 
 import com.aliyuncs.CommonRequest;
@@ -83,40 +83,6 @@ public class LoginController {
         }
     }
 
-    /**
-     * 发送验证码
-     */
-    @PostMapping(value = {"/getMsg"})
-    @ResponseBody
-    public String getMsg(@RequestParam("username") String username,
-                         HttpServletRequest httprequest) {
-        String accessKeyId = "";
-        String secret = "";
-        DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId, secret);
-        IAcsClient client = new DefaultAcsClient(profile);
-        int random = (int) ((Math.random() * 9 + 1) * 100000);
-        String msgValue = String.valueOf(random);
-        String msg = "{\"code\":\"" + msgValue + "\"}";
-        CommonRequest request = new CommonRequest();
-        request.setMethod(MethodType.POST);
-        request.setDomain("dysmsapi.aliyuncs.com");
-        request.setVersion("2017-05-25");
-        request.setAction("SendSms");
-        request.putQueryParameter("RegionId", "cn-hangzhou");
-        request.putQueryParameter("PhoneNumbers", username);
-        request.putQueryParameter("SignName", "");
-        request.putQueryParameter("TemplateCode", "");
-        request.putQueryParameter("TemplateParam", msg);
-        try {
-            CommonResponse response = client.getCommonResponse(request);
-            System.out.println(response.getData());
-            httprequest.getSession().setAttribute("msg", msgValue);
-            return response.getData();
-        } catch (ClientException e) {
-            e.printStackTrace();
-        }
-        return "failed";
-    }
 
     /**
      * 判断验证码及更新数据库
@@ -124,20 +90,15 @@ public class LoginController {
     @PostMapping(value = {"/updatePassword"})
     @ResponseBody
     public String updatePassword(@RequestParam("username") String username,
-                                 @RequestParam("password") String password,
-                                 @RequestParam("webmsg") String webmsg,
-                                 HttpServletRequest request) {
-        String msg = (String) request.getSession().getAttribute("msg");
-        if (!msg.equals(webmsg)) {
-            return "error";
-        } else {
+                         @RequestParam("password") String password,
+                         HttpServletRequest request) {
+
             String md5Password = DigestUtils.md5DigestAsHex(password.getBytes());
             int res = userLoginService.updatePassword(username, md5Password);
-            if (res == 1) {
-                request.getSession().removeAttribute("msg");
+            if (res == 1)
                 return "success";
-            } else
+            else
                 return "failed";
-        }
+
     }
 }

@@ -1,7 +1,7 @@
 server:
   port: 8080
 web:
-  upload-path: c:/xxxx
+  upload-path: c:/icon
 
 spring:
   resources:
@@ -16,9 +16,9 @@ spring:
       #mysql驱动
       driver-class-name: com.mysql.jdbc.Driver
       #基本属性
-      url: jdbc:mysql://127.0.0.1:3306/xxx
-      username: xxxxx
-      password: xxxxx
+      url: jdbc:mysql://127.0.0.1:3306/flyseckill?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+      username: root
+      password: 123456
       #配置初始化大小/最小/最大
       initial-size: 1
       min-idle: 1
@@ -95,3 +95,9 @@ pagehelper:
   reasonable: true
   supportMethodsArguments: true
   params: count=countSql
+
+
+
+
+
+

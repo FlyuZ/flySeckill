@@ -44,14 +44,6 @@
                         </div>
                     </div>
                     <div class="item col-xs-12">
-                        <span class="intelligent-label f-fl"><b class="ftx04">*</b>验证码：</span>
-                        <div class="f-fl item-ifo">
-                            <input id="verify" type="text" maxlength="20" class="txt03 f-r3 required"
-                                   style="ime-mode:disabled;" onpaste="return  false" autocomplete="off"/>
-                            <label id="label4" class="focus"><button class="btn" id="send">发送验证码</button></label>
-                        </div>
-                    </div>
-                    <div class="item col-xs-12">
                         <span class="intelligent-label f-fl">&nbsp;</span>
                         <div class="f-fl item-ifo">
                             <input type="button" class="btn btn-blue f-r3" id="btn" value="确定">
@@ -74,72 +66,6 @@
             return /^\d{11}$/.test(str);
         }
 
-       $("#send").click(function () {
-           initial();
-           var label = $("#label4");
-           var phonenumber = $("#phoneNumber").val();
-           var pwd = $("#pwd").val();
-           var surepwd = $("#surepwd").val();
-           if(!isValid(phonenumber)){
-               $("#label1").css('color', '#f00')
-               $("#phoneNumber").css('border-color', '#f00')
-               alert("手机号不合法！！！")
-               return;
-           }
-           if (!isValid(pwd) || pwd.length < 6 || pwd.length > 20) {
-               $("#label2").css('color', '#f00')
-               $("#pwd").css('border-color', '#f00')
-               return
-           }
-           if (surepwd != pwd) {
-               $("#label3").css('color', '#f00')
-               $("#surepwd").css('border-color', '#f00')
-               $("#label3").text("与密码不一致")
-               return
-           }
-
-           var button = "<button class='btn' id='send'>发送验证码</button>";
-           var test = new Date();
-           var testt = new Date(test.getTime() + 60000);
-           $.ajax({
-               url:"/seckill/getMsg",
-               type:"post",
-               data:{"username":phonenumber},
-               dataType:"text",
-               success:function (res) {
-                  if(res == "failed")
-                  {
-                      alert("验证码获取失败！！！ 请稍后再试");
-                  }else
-                  {
-                      var flag = $.parseJSON(res);
-                      console.log(flag);
-                      if(flag.Code == "OK")
-                      {
-                          console.log(flag.Code);
-                          label.countdown(testt, function (event) {
-                              var format = event.strftime('%M分%S秒后再次发送');
-                              label.text(format);
-                          }).on('finish.countdown', function () {
-                              label.html(button);
-                          });
-                          alert("验证码获取成功！！！ ");
-                      }
-                      else
-                      {
-                          alert("验证码获取失败！！！ 请稍后再试");
-                      }
-                  }
-              } ,
-                error:function (err) {
-                   alert("验证码获取失败！！！ 请稍后再试");
-                   console.log(err);
-               }
-           });
-
-       });
-
-
 
            function initial() {
                $("#label1").css('color', '#999')
@@ -155,7 +81,6 @@
            $("#btn").click(function () {
                initial()
                var phonenumber = $("#phoneNumber").val()
-               var verify = $("#verify").val()
                var pwd = $("#pwd").val()
                var surepwd = $("#surepwd").val()
 
@@ -183,17 +108,11 @@
                    type: 'POST',
                    data: {
                        "username": phonenumber,
-                       "password": pwd,
-                       "webmsg": verify
+                       "password": pwd
                    },
                    dataType: 'text',
                    success: function (res) {
-                       if( res == "error")
-                       {
-                           alert("验证码错误！！！");
-                           $("#verify").css('border-color', '')
-                       }
-                       else if(res == "failed")
+                       if(res == "failed")
                            alert("修改密码失败,请稍后再试！！！");
                        else
                        {
